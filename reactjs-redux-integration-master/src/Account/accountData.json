@@ -1,0 +1,232 @@
+{
+    "ResponseCode": "0",
+    "partyId": "67500210348",
+    "transactionId": "67500210348",
+    "source": "WEB",
+    "statusMsg": "Success",
+    "profileOptimization": 93.56725146198829,
+    "memberView": {
+      "MemberFirstName": "PEARL",
+      "MemberLastName": "CORIGLIANO",
+      "DateOfBirth": "07/04/1927",
+      "BenefitEffectiveDate": "1/1/2018",
+      "Plan": "Advantage65",
+      "Contract": "H46921375",
+      "Gender": "F",
+      "address": [
+        {
+          "type": "MailingAddress",
+          "AddressLine1": "191 5TH ST SW",
+          "addressline2": null,
+          "City": "NAPLES",
+          "ZipCode": "341172118",
+          "State": "FL",
+          "CountyCode": "021"
+        },
+        {
+          "type": "AlternateAddress",
+          "AddressLine1": "191 5TH ST SW",
+          "addressline2": null,
+          "City": "NAPLES",
+          "ZipCode": "341172118",
+          "State": "FL",
+          "CountyCode": "021"
+        },
+        {
+          "type": "BillingAddress",
+          "AddressLine1": "191 5TH ST SW",
+          "addressline2": null,
+          "City": "NAPLES",
+          "ZipCode": "341172118",
+          "State": "FL",
+          "CountyCode": "021"
+        }
+      ],
+      "isEmailVerified": true,
+      "Email": "none.none@gmail.com",
+      "isPhoneNumHomeVerified": true,
+      "PhoneNum": 9049056072,
+      "isPhoneNumMobVerified": true,
+      "MobileNum": 9049056072,
+      "isPhoneNumBusiVerified": true,
+      "BusinessPhNum": 9049056072,
+      "preference": [
+        {
+          "ethinicityandLanguage": [
+            {
+              "type": "Ethnicity",
+              "Hispanic or Latino": "N",
+              "Not Hispanic or Latino": null,
+              "Prefer not to provide": "Y"
+            },
+            {
+              "type": "Race",
+              "Black or Africian American": "N",
+              "Select Country of Origin or ancestory": null,
+              "Native Hawaiian or Other Pacific islander": "Y",
+              "White": "N",
+              "Asain": "N",
+              "American Indian or Alaska native": "N",
+              "Other Race": "N",
+              "Prefer not to provide": "Y"
+            },
+            {
+              "type": "spokenLanguagePreference",
+              "Option 1 selected": "English",
+              "Option 2": "Spanish",
+              "Option 3": "US-English"
+            },
+            {
+              "type": "writtenLanguagePreference",
+              "Option 1 selected": "English",
+              "Option 2": "Spanish",
+              "Option 3": "US-English"
+            },
+            {
+              "type": "howwelldoyouspeakEnglish",
+              "Very Well": "N",
+              "Well": "N",
+              "Not  Well": "Y",
+              "Not At all": "N",
+              "Prefer No to provide": "N"
+            }
+          ],
+          "accessibilityMobilityDisabilityandTransportation": [
+            {
+              "type": "Accessibility",
+              "Screen Reader": "N",
+              "High Contrast Colors": "Y",
+              "Large Font": "N"
+            },
+            {
+              "type": "Mobility",
+              "Cane": "N",
+              "Crutches": "N",
+              "Rollator": "Y",
+              "Transport Chair": "N",
+              "Walker Wheelchair": "N"
+            },
+            {
+              "type": "Disability",
+              "Are you deaf or do you have serious difficulty hearing?": "N",
+              "Are you blind or is it hard for you to see, even when wearing glasses?": "N",
+              "Do you have a disability that makes it very hard to focus, remember or make choices? (5 years of age and older)": "Y",
+              "Do you have serious difficulty walking or climbing stairs?": "N",
+              "Do you have difficulty dressing or bathing?": "N",
+              "Do you have a disability that makes it very hard to do errands alone, like go to the doctor or shop?": "N",
+              "Do you have a disability that make it very hard for you to speak?": "N"
+            },
+            {
+              "type": "Transportation",
+              "Self Driven": "N",
+              "Driven by Care Giver": "N",
+              "Private Car service": "Y",
+              "Uber": "N",
+              "Lyft": "N",
+              "Resident Transportation services": "N",
+              "Dial-a-ride Van services & Ride Sharing": "N",
+              "Public transportation": "N",
+              "Paratransit": "N",
+              "Special Needs vehicle": "N",
+              "Ambulance": "N",
+              "Telemedicine Required": "N"
+            }
+          ]
+        }
+      ],
+      "accountManagement": {
+        "changePassword": "Last Changed: Yesterday 10:22 PM "
+      },
+      "paymentMethods": [
+        {
+          "type": "debitCard",
+          "card details": "Debit Card - Visa - xxxx xxxx xxxx 1234",
+          "expiration": "12/20",
+          "default": "Y",
+          "BillingAddressLine1": "191 5TH ST SW",
+          "BillingAddressline2": null,
+          "City": "NAPLES",
+          "ZipCode": "341172118",
+          "State": "FL",
+          "CountyCode": "021"
+        },
+        {
+          "type": "savingAccount",
+          "card details": "Savings - Bank Acct - xxx xxxx 5678",
+          "expiration": "",
+          "default": "N",
+          "BillingAddressLine1": "191 5TH ST SW",
+          "BillingAddressline2": null,
+          "City": "NAPLES",
+          "ZipCode": "341172118",
+          "State": "FL",
+          "CountyCode": "021"
+        }
+      ],
+      "emergencyContact": [
+        {
+          "type": "contact1",
+          "FirstName": "JOHN",
+          "LastName": "WILL",
+          "Relationship": "subscriber",
+          "AddressLine1": "191 5TH ST SW",
+          "addressline2": null,
+          "City": "NAPLES",
+          "ZipCode": "341172118",
+          "State": "FL",
+          "CountyCode": "021",
+          "Email": "none.none@gmail.com",
+          "PhoneNum": 9049056072,
+          "AlternatePhoneNum": 9049056072
+        },
+        {
+          "type": "contact2",
+          "FirstName": "JOHN",
+          "LastName": "WILL",
+          "Relationship": "subscriber",
+          "AddressLine1": "191 5TH ST SW",
+          "addressline2": null,
+          "City": "NAPLES",
+          "ZipCode": "341172118",
+          "State": "FL",
+          "CountyCode": "021",
+          "Email": "none.none@gmail.com",
+          "PhoneNum": 9049056072,
+          "AlternatePhoneNum": 9049056072
+        }
+      ],
+      "legalSettings": [
+        {
+          "type": "legal1",
+          "LegalType": "Financial Power of Attorney",
+          "FirstName": "JOHN",
+          "LastName": "WILL",
+          "OfficeAddressLine1": "191 5TH ST SW",
+          "Officeaddressline2": null,
+          "City": "NAPLES",
+          "ZipCode": "341172118",
+          "State": "FL",
+          "CountyCode": "021",
+          "Email": "none.none@gmail.com",
+          "ContactNum": 9049056072
+        },
+        {
+          "type": "legal2",
+          "LegalType": "HealthCare Power of Attorney",
+          "FirstName": "JOHN",
+          "LastName": "WILL",
+          "OfficeAddressLine1": "191 5TH ST SW",
+          "Officeaddressline2": null,
+          "City": "NAPLES",
+          "ZipCode": "341172118",
+          "State": "FL",
+          "CountyCode": "021",
+          "Email": "none.none@gmail.com",
+          "ContactNum": 9049056072
+        }
+      ],
+      "partyId": "67500210348"
+    }
+  }
+  
+  
