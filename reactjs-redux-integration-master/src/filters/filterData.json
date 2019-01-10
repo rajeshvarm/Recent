@@ -1,0 +1,36 @@
+{
+    "responseCode": "0",
+    "description": "OK",
+    "partyid": "10000053588",
+    "transactionId": "1002",
+    "sourceSystem": "UI",
+    "data": {
+      "filterData": [
+        {
+          "Plan Year": [
+            "2018",
+            "2017",
+            "2016",
+            "2015",
+            "2014"
+          ],
+          "Type": [
+            "Health",
+            "Pharmacy",
+            "Dental"
+          ],
+          "Providers": [
+            "Whaleblues",
+            "Dr. Pepper",
+            "Mustard Clinic",
+            "Dr. Cavity",
+            "Zesty Diagnostics",
+            "CVS"
+          ],
+          "Appeals": [
+            "Claims Appealed"
+          ]
+        }
+      ]
+    }
+  } 
