@@ -3,14 +3,22 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import MediaQuery from "react-responsive";
 import { translate } from "react-i18next";
-import {fromJS} from 'immutable';
+import { fromJS } from 'immutable';
 import * as links from "constants/routes";
 
-import {numberWithoutDecimalFormat} from 'modules/Utility';
+import UIInputField from 'UI/UIInputField';
+import { LAYOUTS } from 'UI/modules/Enumerations';
+import { getRequiredEmailAddress } from 'modules/ConstraintHelper';
+import { confirmConstraints } from 'ui-utilities';
+import * as LoginConstants from 'constants/login';
+import * as EmailConstants from 'constants/account';
 
+
+
+import { numberWithoutDecimalFormat } from 'modules/Utility';
+import AddPaymentMethod from 'components/add-payment-method/containers/AddPaymentMethod';
 import UIModal from "UI/UIModal";
 import UIAccordion from "UI/UIAccordion";
-import UIDropZone from "UI/UIDropZone";
 import UIRadioSelection from "UI/UIRadioSelection";
 import UICheckSelection from "UI/UICheckSelection";
 
@@ -31,22 +39,71 @@ class Account extends Component {
     state["modalVisibility"] = false;
     state["isMegaButton"] = true;
     state["passwordConfirmation"] = false;
+    state[LoginConstants.PROP_USER_NAME] = '';
+
 
     return state;
   };
+
+  handleSubmit = () => {
+    const v = this.runValidations(this.state);
+    if (v) {
+      this.setState({ error: v });
+    } else {
+      //Success! Validation passed.
+      //clean state and delete the empty error object if present
+      delete this.state.error;
+    }
+  };
+
+  getErrorMessage = (field, errors) => {
+    // interagates the errors object for related messages.
+    if (errors) {
+      let messages = [];
+      if (Array.isArray(field)) {
+        field.map(function (v, index) {
+          if (errors.hasOwnProperty(v)) {
+            messages.push(errors[v].join());
+          }
+        });
+      } else {
+        if (errors.hasOwnProperty(field)) {
+          messages.push(errors[field].join());
+        }
+      }
+      return messages.join();
+    }
+  }
+
+  runValidations = (state) => {
+    const { t } = this.props;
+    let constraints = {};
+
+      constraints[LoginConstants.PROP_USER_NAME] = getRequiredField(t);
+    
+      return confirmConstraints(state, constraints);
+  };
+
+  update = (key, value) => {
+    this.setState(...this.state, {
+      [key]: value
+    });
+  }
 
   componentDidMount() {
     this.props.dispatch(AccountDetailActions.fetchAccountDetails());
   }
 
-  toggleDialogVisibility = () => {
+  toggleDialogVisibility = (component) => {
     this.setState((prevState) => {
-      return { 
-        modalVisibility: !prevState.modalVisibility
+      return {
+        modalVisibility: !prevState.modalVisibility,
+        modalComponent: component ? component : ''
       }
     })
   };
 
+  //Left-Section of Account
   renderProfileDiv = () => {
     const { t } = this.props;
     console.log("account", this.props)
@@ -57,20 +114,34 @@ class Account extends Component {
         <div className="border-image">
           <img src="images/circular-image-treatment.jpg" />
         </div>
-        <button className="image-icon">
+        <button className="image-icon hide-for-small-only">
           <span aria-hidden="true" class="icon icon-1x icon-pencil"></span>
         </button>
         <div class="top-5x">
           <h2 class="hl-medium">{list.get('MemberFirstName')} {list.get('MemberLastName')}</h2>
-          <div class="progress-bar" role="progressbar" tabindex="0" aria-valuenow={progress} aria-valuemin="0"
+          <MediaQuery maxDeviceWidth={640}>
+            <div className="row button-margin">
+              <div className="columns small-12">
+                <button className="primary core2 expand">
+                  {t('account:uploadPhoto')}
+                </button>
+              </div>
+              <div className="columns small-12">
+                <button className="secondary core2 expand">
+                  {t('account:removoPhoto')}
+                </button>
+              </div>
+            </div>
+          </MediaQuery>
+          <div class="progress-bar" role="progressbar" tabIndex="0" aria-valuenow={progress} aria-valuemin="0"
             aria-valuetext={`${progress} percent`}
             aria-valuemax="100">
-            <div class="progress" style={{width:`${progress}%`}}></div>
+            <div class="progress" style={{ width: `${progress}%` }}></div>
           </div>
           <p><span className="font">{numberWithoutDecimalFormat(progress)}</span> / 100</p>
           <hr className="collapse" />
-          <p><strong>{t("account:accountcomplete")}</strong></p>
-          <hr className="collapse" />
+          <p className="hide-for-small-only"><strong>{t("account:accountcomplete")}</strong></p>
+          <hr className="collapse hide-for-small-only" />
           <p><a href="#" className="font">{t("account:emergencycontact")}</a></p>
           <p><a href="#" className="font">{t("account:verifyemail")}</a></p>
         </div>
@@ -78,85 +149,338 @@ class Account extends Component {
     );
   };
 
-  renderAddressEmailAndPhone = (t) => {
-    return <div className="row">
-        <div className="columns small-12 medium-4 large-4" />
-        <div className="columns small-12 medium-7 large-7" />
-        <div className="columns small-12 medium-1 large-1">
-          <button className="image-icon-text" onClick={this.toggleDialogVisibility} aria-haspopup="dialog">
-            <span aria-hidden="true" class="icon icon-1x icon-pencil" />
-            <div>{t("button.edit")}</div>
-          </button>
-        <UIModal visible={this.state.modalVisibility} onExit={this.toggleDialogVisibility}>
-          <div className="row head">
-            <div className="columns small-11">
-              <h2 id="modal-title" className="left-3x">
-                  Header
-                </h2>
-            </div>
-            <div className="columns small-1">
-              <button aria-label="close-dialog" title="close-dialog" onClick={this.toggleDialogVisibility} />
-            </div>
+  //Rendering Inside Accordion Body
+  renderAccordionContentRow = (list) => {
+    const { t } = this.props;
+    return (
+      <MediaQuery minDeviceWidth={640}>
+        {(matches) => {
+          if (matches) {
+            return (
+              <Fragment>
+                <div className="row dotted-divider">
+                  <div className="columns small-12 medium-4 large-4 top-1x">
+                    <strong>{list.label}</strong>
+                  </div>
+                  <div className="columns small-12 medium-7 large-4 top-1x">
+                    {list.value}
+                  </div>
+                  <div className="columns small-12 medium-1 large-1 bottom-1x">
+                    {list.isEdit && <button className="image-icon-text" onClick={this.toggleDialogVisibility.bind(this, list.uiModalComponent)} aria-haspopup="dialog">
+                      <span aria-hidden="true" class="icon icon-1x icon-pencil" />
+                      <div>{t("button.edit")}</div>
+                    </button>}
+                  </div>
+                </div>
+              </Fragment>
+            );
+          }
+          else {
+            return (
+              <div className="row dotted-divider">
+                <div className="columns small-10">
+                  <div className="row">
+                    <div className="columns small-12">
+                      <strong>{list.label}</strong>
+                    </div>
+                    <div className="columns small-12">
+                      {list.value}
+                    </div>
+                  </div>
+                </div>
+                <div className="columns small-2">
+                  {list.isEdit && <button className="image-icon-text" onClick={this.toggleDialogVisibility.bind(this, list.uiModalComponent)} aria-haspopup="dialog">
+                    <span aria-hidden="true" class="icon icon-1x icon-pencil" />
+                    <div>{t("button.edit")}</div>
+                  </button>}
+                </div>
+              </div>
+            );
+          }
+        }}
+      </MediaQuery>
+    )
+  }
+
+  // Address types
+  appendAddressDetails = (list) => {
+    let address = '';
+    list.mapKeys((key, value) => {
+      value = value && key !== 'type' ? value : '';
+      address = `${address} ${value}`;
+    });
+    return address;
+  }
+
+  renderAddressTypes = () => {
+    const {t} = this.props
+    let list = this.props.data;
+    let addressLabel = [t('account:homeAddress'), t('account:alternateAddress'), t('account:billingAddress')];
+    let listData = [];
+    for (let i = 0; i < list.getIn(['memberView', 'address']).size; i++) {
+      listData.push({
+        label: addressLabel[i],
+        value: this.appendAddressDetails(list.getIn(['memberView', 'address', i])),
+        isEdit: true,
+        data: list.getIn(['memberView', 'address']),
+        uiModalComponent: this.renderEditAddressModal(list.getIn(['memberView', 'address'])),
+        key: `renderAddressTypes-${i}`
+      });
+    }
+    return listData.map((listData) => this.renderAccordionContentRow(listData))
+  }
+
+  renderEditAddressModal = () => {
+    const { t } = this.props
+    return (
+      <Fragment>
+        <div className="row head">
+          <div className="columns small-11">
+            <h2 id="modal-title" className="left-3x">{t('account:changeAddress')}</h2>
           </div>
-          <div className="row body">
-            <p>Hello world</p>
+          <div className="columns small-1">
+            <button aria-label="close-dialog" title="close-dialog" onClick={this.toggleDialogVisibility} />
           </div>
-          <div className="row top-2x">
-            <div className="columns small-12">
-              <button className="button secondary columns small-5" onClick={this.toggleDialogVisibility}>
-                Close
-                </button>
-            </div>
-          </div>
-        </UIModal>
         </div>
-      </div>;
+        <div className="row body">
+        </div>
+        <div className="row footer">
+          <div className="columns small-6">
+            <button className="button primary core2 columns small-12 large-6" onClick={this.toggleDialogVisibility}>
+              {t('account:close')}
+            </button>
+          </div>
+          <div className="columns small-6">
+            <button className="button secondary core2 columns small-12 large-6 float-right" onClick={this.toggleDialogVisibility}>
+              {t('account:savechanges')}
+            </button>
+          </div>
+        </div>
+      </Fragment>
+    )
+  }
+
+  //Email
+  renderEmailValue = () => {
+    const {t} = this.props
+    return (
+      <Fragment>
+        <span>{this.props.data.getIn(['memberView', 'Email'])}</span>
+        <span className="left-2x">
+          {
+            this.props.data.getIn(['memberView', 'isEmailVerified']) ? <span className="green">{t('account:verified')}</span> :
+            <a>{t('account:unverified')}</a>
+          }
+        </span>
+      </Fragment>
+    )
+  }
+
+  renderEmailAddress = () => {
+    const {t} =this.props
+    let email = this.props.data.getIn(['memberView', 'Email']);
+    let emailList = {
+      label: t('account:email'),
+      value: this.renderEmailValue(),
+      isEdit: true,
+      data: email,
+      uiModalComponent: this.renderEmailModal(email),
+      key: 'renderEmailAddress'
+    }
+    return this.renderAccordionContentRow(emailList)
+  }
+
+  renderEmailModal = (email) => {
+    const { t } = this.props
+    const donotSendMeEmails = [{label: t('account:pleasedonotsendmeemails'), value: '1'}];
+    return (
+      <Fragment>
+        <div className="row head">
+          <div className="columns small-11">
+            <h2 id="modal-title">{t('account:changeEmail')}</h2>
+          </div>
+          <div className="columns small-1">
+            <button aria-label="close-dialog" title="close-dialog" onClick={this.toggleDialogVisibility} />
+          </div>
+        </div>
+        <div className="row body top-1x">
+          <div className="columns small-12">
+            <strong>{t('account:emailaddressonfile')}</strong>
+          </div>
+          <div className="columns small-12">
+            {this.props.data.getIn(['memberView', 'Email'])}
+          </div>
+          <div className="columns small-12 top-1x">
+            <UIInputField
+              label={t('account:enteremailaddress')}
+              name={LoginConstants.PROP_USER_NAME}
+              onValidatedChange={this.update}
+              layout={LAYOUTS.FLOAT6}
+              errorMessage={this.getErrorMessage(LoginConstants.PROP_USER_NAME, this.state.error)}
+            />
+          </div>
+          <div className="columns small-12">
+            <UIInputField
+              label={t('account:reenteremailaddress')}
+              name={LoginConstants.PROP_USER_NAME}
+              onValidatedChange={this.update}
+              layout={LAYOUTS.FLOAT6}
+              errorMessage={this.getErrorMessage(LoginConstants.PROP_USER_NAME, this.state.error)}
+            />
+          </div>
+          <div className="columns small-12 top-1x">
+            <UICheckSelection
+              name={EmailConstants.PLEASE_DO_NOT_SEND_ME_EMAILS}
+              layout={LAYOUTS.COLUMN0}
+              onValidatedChange={this.update}
+              defaultValue={this.state.donotSendMeEmails}
+              choices={donotSendMeEmails}
+            />
+          </div>
+        </div>
+        <div className="row footer">
+          <div className="columns small-6">
+            <button className="button primary core2 columns small-12 large-6" onClick={this.toggleDialogVisibility}>
+              {t('account:close')}
+            </button>
+          </div>
+          <div className="columns small-6">
+            <button className="button secondary core2 columns small-12 large-6 float-right" onClick={this.handleSubmit}>
+              {t('account:savechanges')}
+            </button>
+          </div>
+        </div>
+      </Fragment>
+    )
+  }
+
+  //Phone
+  renderEditPhoneNumberModal = () => {
+    const { t } = this.props
+    return (
+      <Fragment>
+        <div className="row head">
+          <div className="columns small-11">
+            <h2 id="modal-title" className="left-3x">{t('account:changePhoneNumber')}</h2>
+          </div>
+          <div className="columns small-1">
+            <button aria-label="close-dialog" title="close-dialog" onClick={this.toggleDialogVisibility} />
+          </div>
+        </div>
+        <div className="row body">
+        </div>
+        <div className="row footer">
+          <div className="columns small-6">
+            <button className="button primary core2 columns small-12 large-6" onClick={this.toggleDialogVisibility}>
+              {t('account:close')}
+            </button>
+          </div>
+          <div className="columns small-6">
+            <button className="button secondary core2 columns small-12 large-6 float-right" onClick={this.toggleDialogVisibility}>
+              {t('account:savechanges')}
+            </button>
+          </div>
+        </div>
+      </Fragment>
+    );
+  }
+
+  renderMobileNumber = () => {
+    const {t} = this.props
+    let contactDetails = [
+      { label: t('account:phone'), suffix: 'M:', key: 'MobileNum', labelHide: false, verifcationKey: 'isPhoneNumMobVerified' },
+      // {label: 'Home', suffix: 'H', key: 'PhoneNum',  labelHide: true, verifcationKey: 'isPhoneNumHomeVerified'},
+      // {label: 'Buisness', suffix: 'B', key: 'BusinessPhNum',  labelHide: true, verifcationKey: 'isPhoneNumBusiVerified'}
+    ]
+    let mobileList = [];
+    contactDetails.forEach((list, index) => {
+      mobileList.push({
+        label: !list.labelHide ? list.label : '',
+        value: this.renderMobileValue(list),
+        isEdit: index === 0 ? true : false,
+        data: this.props.data.getIn(['memberView', list.key]),
+        uiModalComponent: this.renderEditPhoneNumberModal(this.props.data.getIn(['memberView', list.key]), list),
+        key: `renderEmailAddress-${index}`
+      })
+
+    });
+    return mobileList.map((list) => this.renderAccordionContentRow(list))
+  }
+
+  renderMobileValue = (list) => {
+    const {t} = this.props
+    return (
+      <Fragment key={list.key}>
+        <span>{list.suffix} {this.props.data.getIn(['memberView', list.key])}</span>
+        <span className="left-2x">
+          {
+            this.props.data.getIn(['memberView', list.verifcationKey]) ? <span className="green">{t('account:verified')}</span> :
+              <a className="verification_link">{t('account:unverified')}</a>
+          }
+        </span>
+      </Fragment>
+    )
+  }
+
+  //Addresses,Email and Phone Numbers body
+  renderAddressEmailAndPhone = (t) => {
+    let list = this.props.data;
+    let listData = {}
+    return (
+      <div>
+        {list.getIn(['memberView', 'address']) && this.renderAddressTypes()}
+        {list.getIn(['memberView', 'Email']) && this.renderEmailAddress()}
+        {list.getIn(['memberView', 'MobileNum']) && this.renderMobileNumber()}
+      </div>
+    );
   };
 
   renderEthnicityLanguagePreference = (t) => {
-    return(
+    return (
       <div>
       </div>
     );
   };
 
   renderAccessibilityMobilityTransportation = (t) => {
-    return(
+    return (
       <div>
       </div>
     );
   };
 
   renderAccountManagement = (t) => {
-    return(
+    return (
       <div>
       </div>
     );
   };
 
   renderPaymentMethods = (t) => {
-    return(
+    return (
       <div>
+        <AddPaymentMethod />
       </div>
     );
   };
 
   renderEmergencyContact = (t) => {
-    return(
+    return (
       <div>
       </div>
     );
   };
 
   renderLegalSettings = (t) => {
-    return(
+    return (
       <div>
       </div>
     );
   };
 
+ //Right-Section of Account
   renderProfileDetail = () => {
-    const {t} = this.props;
+    const { t } = this.props;
     const accordionContent = [
       {
         araiLabel: t('account:accordionHeaders.addressEmailAndPhone'),
@@ -194,417 +518,19 @@ class Account extends Component {
         body: this.renderLegalSettings(t)
       }
     ];
-    return(
+    return (
       <div>
-        <UIAccordion>
+        <UIAccordion
+          className="accordion-naked"
+        >
           {accordionContent}
         </UIAccordion>
+        <UIModal visible={this.state.modalVisibility} onExit={this.toggleDialogVisibility}>
+          {this.state.modalComponent}
+        </UIModal>
       </div>
     )
   }
-  // renderProfileDetail = () => {
-  //   const { t } = this.props;
-  //   let paymentSelection = [{ label: "Set as Default", value: "1" }];
-  //   const accordionContent = [
-  //     {
-  //       header: "Addresses, Email and Phone Numbers",
-  //       body: (
-  //         <div>
-  //           <div className="accordion-item-details">
-  //             <h4>
-  //               <strong>{t("account:address")}</strong>
-  //             </h4>
-  //             <div className="accordion-item-meta">
-  //               <p>{t("account:addressdetails")}</p>
-  //               <p>{t("account:city")}</p>
-  //             </div>
-  //             <div className="accordion-item-edit">
-  //               <img
-  //                 alt="edit icon"
-  //                 src="http://bcbsfl.protoshare.com/wa/asset?oid=5928"
-  //                 class="s9-content pointer"
-  //                 onClick={this.toggle}
-  //               />
-  //             </div>
-  //           </div>
-  //           <div>
-  //             <p>
-  //               <strong>{t("account:alternateaddress")}</strong>
-  //               {t("account:alternateaddressdetails")}
-  //             </p>
-  //           </div>
-  //           <div>
-  //             <p>
-  //               <strong>{t("account:billingaddress")}</strong>
-  //             </p>
-  //           </div>
-  //           <div className="accordion-item-details">
-  //             <p>
-  //               <strong>{t("account:email")}</strong>
-  //               {t("account:emailaddress")}
-  //             </p>
-  //             <p class="accordion-item-edit">
-  //               <a href="#">{t("account:verification")}</a>
-  //             </p>
-  //           </div>
-  //         </div>
-  //       )
-  //     },
-  //     {
-  //       header: "Ethnicity and Language Preference",
-  //       body: (
-  //         <div>
-  //           <div className="accordion-item-details">
-  //             <p>
-  //               <strong>{t("account:ethnicity")}</strong>
-  //               {t("account:ethnicitytype")}
-  //             </p>
-  //             <div className="accordion-item-edit">
-  //               <img
-  //                 alt="edit icon"
-  //                 src="http://bcbsfl.protoshare.com/wa/asset?oid=5928"
-  //                 class="s9-content pointer"
-  //                 onClick={this.toggle}
-  //               />
-  //             </div>
-  //           </div>
-  //           <div>
-  //             <p>
-  //               <strong>{t("account:spokenlanguage")}</strong>
-  //               {t("account:english")}
-  //             </p>
-  //           </div>
-  //           <div>
-  //             <p>
-  //               <strong>{t("account:writtenlanguage")}</strong>
-  //               {t("account:english")}
-  //             </p>
-  //           </div>
-  //         </div>
-  //       )
-  //     },
-  //     {
-  //       header: "Accessibility, Mobility, Disability and Transportation",
-  //       body: (
-  //         <div>
-  //           <div className="accordion-item-details">
-  //             <p>
-  //               <strong>{t("account:accessibility")}</strong>
-  //               {t("account:accessibilitytype")}
-  //             </p>
-  //             <div className="accordion-item-edit">
-  //               <img
-  //                 alt="edit icon"
-  //                 src="http://bcbsfl.protoshare.com/wa/asset?oid=5928"
-  //                 class="s9-content pointer"
-  //                 onClick={this.toggle}
-  //               />
-  //             </div>
-  //           </div>
-  //           <div>
-  //             <p>
-  //               <strong>{t("account:mobility")}</strong>
-  //               {t("account:mobilitytype")}
-  //             </p>
-  //           </div>
-  //           <div>
-  //             <p>
-  //               <strong>{t("account:disability")}</strong>
-  //             </p>
-  //           </div>
-  //           <div>
-  //             <p>
-  //               <strong>{t("account:transportation")}</strong>
-  //               {t("account:transportationtype")}
-  //             </p>
-  //           </div>
-  //         </div>
-  //       )
-  //     },
-  //     {
-  //       header: "Payment Methods",
-  //       body: (
-  //         <div>
-  //           <div className="accordion-item-details">
-  //             <p>
-  //               <strong>{t("account:cardtype")}</strong>
-  //               {t("account:cardnumber")}
-  //             </p>
-  //             <div>{t("account:expdate")}</div>
-  //             <div className="accordion-item-edit">
-  //               <img
-  //                 alt="edit icon"
-  //                 src="http://bcbsfl.protoshare.com/wa/asset?oid=5928"
-  //                 class="s9-content pointer"
-  //                 onClick={this.toggle}
-  //               />
-  //             </div>
-  //             <div className="fieldset">
-  //               <UIRadioSelection
-  //                 label=""
-  //                 name="metals"
-  //                 defaultValue={"1"}
-  //                 choices={paymentSelection}
-  //                 onValidatedChange={this.paymentChange}
-  //               />
-  //             </div>
-  //           </div>
-  //           <div className="accordion-item-details">
-  //             <p>
-  //               <strong>{t("account:accountype")}</strong>
-  //               {t("account:accountno")}
-  //             </p>
-  //             <div className="accordion-item-edit">
-  //               <img
-  //                 alt="edit icon"
-  //                 src="http://bcbsfl.protoshare.com/wa/asset?oid=5928"
-  //                 class="s9-content pointer"
-  //                 onClick={this.toggle}
-  //               />
-  //             </div>
-  //             <div className="fieldset">
-  //               <UIRadioSelection
-  //                 label=""
-  //                 name="metals"
-  //                 defaultValue={"1"}
-  //                 choices={paymentSelection}
-  //                 onValidatedChange={this.paymentChange}
-  //               />
-  //             </div>
-  //           </div>
-  //           {this.renderChangePassword()}
-  //         </div>
-  //       )
-  //     },
-  //     {
-  //       header: "Emergency Contact",
-  //       body: (
-  //         <div>
-  //           <div className="accordion-item-details">
-  //             <p>
-  //               <strong>
-  //                 {t("account:emergencyname")}
-  //                 {t("account:relation")}
-  //               </strong>
-  //               {t("account:contactno")}
-  //             </p>
-  //             <div className="accordion-item-edit">
-  //               <img
-  //                 alt="edit icon"
-  //                 src="http://bcbsfl.protoshare.com/wa/asset?oid=5928"
-  //                 class="s9-content pointer"
-  //                 onClick={this.toggle}
-  //               />
-  //             </div>
-  //           </div>
-  //           <div className="accordion-item-details">
-  //             <p>
-  //               <strong>{t("account:addemergency")}</strong>
-  //             </p>
-  //             <div className="accordion-item-edit">
-  //               <img
-  //                 alt="edit icon"
-  //                 src="http://bcbsfl.protoshare.com/wa/asset?oid=5928"
-  //                 class="s9-content pointer"
-  //                 onClick={this.toggle}
-  //               />
-  //             </div>
-  //           </div>
-  //         </div>
-  //       )
-  //     },
-  //     {
-  //       header: "Legal Settings",
-  //       body: (
-  //         <div>
-  //           <div className="accordion-item-details">
-  //             <p>
-  //               <strong>{t("account:poa")}</strong>
-  //             </p>
-  //             <div className="accordion-item-edit">
-  //               <img
-  //                 alt="edit icon"
-  //                 src="http://bcbsfl.protoshare.com/wa/asset?oid=5928"
-  //                 class="s9-content pointer"
-  //                 onClick={this.toggle}
-  //               />
-  //             </div>
-  //           </div>
-  //           <div className="accordion-item-details">
-  //             <p>
-  //               <strong>{t("account:hpoa")}</strong>
-  //             </p>
-  //             <div className="accordion-item-edit">
-  //               <img
-  //                 alt="edit icon"
-  //                 src="http://bcbsfl.protoshare.com/wa/asset?oid=5928"
-  //                 class="s9-content pointer"
-  //                 onClick={this.toggle}
-  //               />
-  //             </div>
-  //           </div>
-  //           <div className="accordion-item-details">
-  //             <p>
-  //               <strong>{t("account:legalforms")}</strong>
-  //             </p>
-  //             <div className="accordion-item-edit">
-  //               <img
-  //                 alt="edit icon"
-  //                 src="http://bcbsfl.protoshare.com/wa/asset?oid=5928"
-  //                 class="s9-content pointer"
-  //                 onClick={this.toggle}
-  //               />
-  //             </div>
-  //           </div>
-  //         </div>
-  //       )
-  //     }
-  //   ];
-  //   return (
-  //     <div class="account-grid-item-2">
-  //       <UIAccordion>{accordionContent}</UIAccordion>
-  //     </div>
-  //   );
-  // };
-
-  // toggle = () => {
-  //   this.setState(prevState => ({
-  //     modalVisibility: !prevState.modalVisibility
-  //   }));
-  // };
-
-  // renderChangePassword = () => {
-  //   let agree = [
-  //     {
-  //       label:
-  //         "Yes, I want to recieve all future communications electronically",
-  //       value: "nil"
-  //     }
-  //   ];
-  //   const { t } = this.props;
-  //   return (
-  //     <UIModal visible={this.state.modalVisibility} onExit={this.onModalExit}>
-  //       <div className="row head">
-  //         <div className="columns small-1">
-  //           <button
-  //             aria-label="close-dialog"
-  //             title="close-dialog"
-  //             onClick={this.onModalExit}
-  //           />
-  //         </div>
-  //       </div>
-
-  //       <div class="change-password-modal">
-  //         <h2 class="modal-header">{t("account:changepassword")}</h2>
-  //         <section class="modal-body">
-  //           <div class="modal-form">
-  //             <div class="modal-form-group">
-  //               <label className="modal-form-group-label" for="password">
-  //                 {t("account:password")}
-  //               </label>
-  //               <input
-  //                 type="text"
-  //                 name="password"
-  //                 placeholder="Enter Password"
-  //                 id="password"
-  //               />
-  //             </div>
-  //             <div class="modal-form-group">
-  //               <span className="modal-form-group-label">
-  //                 {t("account:passwordstrength")} : {t("account:passwordtype")}
-  //               </span>
-  //             </div>
-  //             <div class="password-strength" />
-  //             <div class="modal-form-group">
-  //               <label
-  //                 className="modal-form-group-label"
-  //                 for="confirm-password"
-  //               >
-  //                 {t("account:confirmpassword")}
-  //               </label>
-  //               <input
-  //                 type="password"
-  //                 name="confirm-password"
-  //                 placeholder="Confirm Your Password"
-  //                 id="confirm-password"
-  //               />
-  //             </div>
-  //             <div class="modal-form-group">
-  //               <div className="modal-hlp-txt">
-  //                 <UICheckSelection
-  //                   label=""
-  //                   name="agree"
-  //                   class="fieldset"
-  //                   defaultValue={["1"]}
-  //                   choices={agree}
-  //                   onValidatedChange={this.paymentChange}
-  //                   hasNoneOfTheAbove={true}
-  //                 />
-  //               </div>
-  //             </div>
-  //             <div class="icon icon-exclamation-circle password-tooltip" />
-  //             <span className="tooltip-text">{t("account:readmore")}</span>
-  //           </div>
-  //           <div class="password-guidelines">
-  //             <h3 class="guidelines-header">{t("account:guidelines")}</h3>
-  //             <h4 class="guidelines-sub-header">
-  //               {t("account:passwordexample")}
-  //             </h4>
-  //             <div class="guidelines-description">
-  //               <p>{t("account:guidelinesdescription-1")}</p>
-  //               <p>{t("account:guidelinesdescription-2")}</p>
-  //               <p>{t("account:guidelinesdescription-3")}</p>
-  //               <p>{t("account:guidelinesdescription-4")}</p>
-  //               <p>{t("account:guidelinesdescription-5")}</p>
-  //               <p>{t("account:guidelinesdescription-6")}</p>
-  //               <p>{t("account:guidelinesdescription-7")}</p>
-  //             </div>
-  //           </div>
-  //         </section>
-  //         <div class="modal-footer">
-  //           <button class="modal-btn primary-btn" onClick={this.onModalExit}>
-  //             {t("account:Close")}
-  //           </button>
-  //           <button class="modal-btn secondary-btn" onClick={this.handleSubmit}>
-  //             {t("account:savechanges")}
-  //           </button>
-  //         </div>
-  //         {this.renderPasswordConfirmation()}
-  //       </div>
-  //     </UIModal>
-  //   );
-  // };
-  // paymentChange = () => { };
-  // handleSubmit = () => {
-  //   this.setState(prevState => ({
-  //     passwordConfirmation: !prevState.passwordConfirmation
-  //   }));
-  // };
-  // onModalExit = () => {
-  //   this.setState({ modalVisibility: false });
-  // };
-  // renderPasswordConfirmation = () => {
-  //   console.log("renderPasswordConfirmation");
-  //   const { t } = this.props;
-  //   return (
-  //     <UIModal
-  //       visible={this.state.passwordConfirmation}
-  //       onExit={this.onModalExit}
-  //     >
-  //       <div className="changepassword-main">
-  //         <div className="changepassword-sub">
-  //           <div className="icon icon-check success-icon" />
-  //           <div className="confirmation-icon" />
-  //         </div>
-  //         <h2 className="confirmation-status">{t("account:success")}</h2>
-  //         <p className="confirmation-msg">{t("account:successmsg")}</p>
-  //         <button class="confirmation-btn" onClick={this.onModalExit}>
-  //           {t("account:ok")}
-  //         </button>
-  //       </div>
-  //     </UIModal>
-  //   );
-  // };
 
   render() {
     const { t } = this.props;
@@ -614,9 +540,9 @@ class Account extends Component {
           <div className="columns small-12">
             <h1>{t("account:account")}</h1>
           </div>
-          </div>
-          <div className="rows top-4x">
-          <div className="columns small-12 medium-4 large-4">
+        </div>
+        <div className="rows top-4x">
+          <div className="columns small-12 medium-4 large-4 bottom-2x">
             {this.renderProfileDiv()}
           </div>
           <div className="columns small-12 medium-8 large-8">
