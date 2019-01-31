@@ -8,6 +8,7 @@ import { getRequiredField } from 'modules/ConstraintHelper';
 
 import UIRadioSelection from 'UI/UIRadioSelection';
 import UIModal from 'UI/UIModal';
+import Loader from 'components/Loader';
 import UITable from "components/UITable";
 import Filters from "components/filters/containers/Filters";
 import UIAlert from "UI/UIAlert";
@@ -19,6 +20,7 @@ import { ALERTS } from "UI/modules/Enumerations";
 import * as links from 'constants/routes';
 import * as Actions from '../actions';
 import * as Constants from 'constants/claims';
+import * as GlobalConstants from 'constants/global';
 
 
 
@@ -27,8 +29,6 @@ class Claims extends Component {
   constructor(props) {
     super(props);
     this.state = this.ingressDataTransform(props);
-    this.state.downloadClaimsModalVisibility = false;
-    this.state.modalStepNumber = 1;
 
     //initialize class-level variables here for efficiency
     this.claimsModalStepOneConstraints = {[Constants.FIELD_DOWNLOAD_CLAIMS_RANGE]: getRequiredField(this.props.t)};
@@ -39,6 +39,8 @@ class Claims extends Component {
   ingressDataTransform = (props) => {
     let state = {
       searchResults: [],
+      downloadClaimsModalVisibility: false,
+      modalStepNumber: 1,
       ddState: simpleDDState("savingsAlert", true, null)
     };
     return state;
@@ -49,7 +51,7 @@ class Claims extends Component {
   }
   
   componentWillReceiveProps(nextProps) {
-    this.setState({ searchResults: nextProps.data.filteredData })
+    this.setState({ searchResults: nextProps.data.get(Constants.PROP_FILTERED_DATA) })
   }
 
   filterData = (request) => {
@@ -67,9 +69,9 @@ class Claims extends Component {
   searchList = (event) => {
     let { value } = event.target
     this.setState({ value }, () => {
-      let updatedList = this.props.data.filteredData;
+      let updatedList = this.props.data.get(Constants.PROP_FILTERED_DATA);
       let searchValue = this.state.value.toLowerCase();
-      updatedList = updatedList.filter(item => {
+      updatedList = updatedList.toJS().filter(item => {
         return (Object.keys(item).some(key => item[key].toString().toLowerCase().search(
           searchValue) !== -1))
       });
@@ -282,7 +284,8 @@ class Claims extends Component {
         label: t('claims:table.servicedate'),
         name: "Service Date",
         key: "service",
-        sort: true
+        sort: true,
+        type: 'date'
       },
       {
         label: t('claims:table.servicetype'),
@@ -314,6 +317,8 @@ class Claims extends Component {
     ]
     const ariaLabelKey = ['facilityprovider', 'receiveddate'];
     const notification = { title: "Close savings message", ariaLabel: "Close savings message", onClose: this.closeNotification }
+    const filteredDataLength = this.props.data.get(Constants.PROP_FILTERED_DATA).length;
+    const isLoaded = this.props.data.get(Constants.PROP_ISLOADED);
     return (
       <Fragment>
         <div className="row">
@@ -395,40 +400,42 @@ class Claims extends Component {
             />
           </div>
           <div className="desktop-view columns small-12 medium -3 large-3 top-1x text-right" aria-describedby={this.props.name}>
-            {t('table:table.displaying')} {this.props.data.isLoaded || this.props.data.filteredData.length < DEFAULTROWDISPLAY ?
-              this.props.data.filteredData.length : DEFAULTROWDISPLAY}/
-                    {this.props.data.filteredData.length} {t('table:table.claims')}
+            {t('table:table.displaying')} {isLoaded || filteredDataLength < DEFAULTROWDISPLAY ?
+              filteredDataLength
+              :
+              DEFAULTROWDISPLAY}/{filteredDataLength} {t('table:table.claims')}
           </div>
         </div>
-        <UITable
-          data={this.state.searchResults}
-          headers={columns}
-          defaultRowDisplay={DEFAULTROWDISPLAY}
-          name={t("claims:claims")}
-          sortable={true}
-          pageLink={links.CLAIMSOVERVIEW}
-          providerRowDisplay='facilityprovider'
-          uniqueKey="claimId"
-          showDetails={true}
-          isLoaded={this.props.data.isLoaded}
-          linkAriaLabelKey={ariaLabelKey}
-          filterAriaControl="sidenav claims"
-        />
-        {!this.props.data.isLoaded &&
-          this.props.data.filteredData.length > DEFAULTROWDISPLAY && (
-            <div className="row top-1x text-center">
-              <div className="columns small-12 ">
-                <button
-                  type="button"
-                  className="button secondary core2"
-                  onClick={this.toggleDataList}
-                  aria-label="View more Claims"
-                >
-                  {t('table:table.viewmore')}
-                </button>
+        <Loader isFetching={this.props.data.get(GlobalConstants.PROP_FETCHING)}>
+          <UITable
+            data={this.state.searchResults}
+            headers={columns}
+            defaultRowDisplay={DEFAULTROWDISPLAY}
+            name={t("claims:claims")}
+            sortable={true}
+            pageLink={links.CLAIMSOVERVIEW}
+            providerRowDisplay='facilityprovider'
+            uniqueKey="claimId"
+            showDetails={true}
+            isLoaded={isLoaded}
+            linkAriaLabelKey={ariaLabelKey}
+            filterAriaControl="sidenav claims"
+          />
+          {!isLoaded && filteredDataLength > DEFAULTROWDISPLAY && (
+              <div className="row top-1x text-center">
+                <div className="columns small-12 ">
+                  <button
+                    type="button"
+                    className="button secondary core2"
+                    onClick={this.toggleDataList}
+                    aria-label="View more Claims"
+                  >
+                    {t('table:table.viewmore')}
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+        </Loader>
 
         {/* Export/Download Claims Modal Content  */}
         <div aria-live="polite">

@@ -33,10 +33,10 @@ class UITable extends Component {
   }
 
   //SORTING FUNCTIONALITY
-  onSort = (event, sortKey, isSort) => {
+  onSort = (event, sortKey, isSort, itemType) => {
     const sortData = this.state.isFilterData;
     let tableSort = this.state.sort;
-    const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+    const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base', date: true });
     if (isSort) {
       if (
         tableSort.column &&
@@ -49,7 +49,7 @@ class UITable extends Component {
           sortname: "descending"
         };
         sortData.sort((b, a) => {
-        return collator.compare(a[sortKey], b[sortKey]);
+          return  itemType && itemType === 'date' ? new Date(a[sortKey]) - new Date(b[sortKey]) : collator.compare(a[sortKey], b[sortKey]);
         });
       } else {
         tableSort = {
@@ -58,7 +58,7 @@ class UITable extends Component {
           sortname: "ascending"
         };
         sortData.sort((a, b) => {
-          return collator.compare(a[sortKey], b[sortKey]);
+          return itemType && itemType === 'date' ? new Date(a[sortKey]).getTime() - new Date(b[sortKey]) :  collator.compare(a[sortKey], b[sortKey]);
         });
       }
     }
@@ -101,7 +101,7 @@ class UITable extends Component {
                             rowSpan="1"
                             colSpan="1"
                             key={index}
-                            onClick={e => this.onSort(e, item.key, item.sort)}
+                            onClick={e => this.onSort(e, item.key, item.sort, item.type)}
                             aria-sort={sortname}
                           >
                             {item.label}

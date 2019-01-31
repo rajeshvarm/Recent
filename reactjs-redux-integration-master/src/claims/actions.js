@@ -13,10 +13,11 @@ export function fetchClaims(request) {
       type: FETCH_CLAIMS_REQUEST
     });
 
-    // const partyId = window.config.partyId
-    // const url =`http://mlp-unta.ose-dev.bcbsfl.com/mlp/api/v1/mlpsvc/claims/${partyId}?sourceSystem=UI`
+    const partyId = window.config.partyId
+    //const url =`/mlp/api/v1/mlpsvc/claims/10000053588?sourceSystem=UI`;
 
-    const url =`/mlp/api/v1/mlpsvc/claims/10000053588?sourceSystem=UI`;
+    // switch to complete path if local doesn't respond to relative path 
+    const url =`http://mlp-tsta.ose-dev.bcbsfl.com/mlp/api/v1/mlpsvc/claims/10000053588?sourceSystem=UI`
     return axios
        .post(url,request)
       // .get('/data/claimsData.json')
