@@ -1,0 +1,30 @@
+.header-banner {
+    background-image: url("../images/HomepageBackground.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin-top: -0.9375rem;
+  }
+  
+  .header-content {
+    color: $white;
+    line-height: 1.875rem;
+    margin-bottom: 12.5rem;
+    h2 {
+      font-weight: inherit;
+    }
+  }
+  
+  .banner-button {
+      position: relative;
+      top: 21.15rem;
+      left: 0.5rem;
+    .circle-button {
+      background-color: $white;
+    }
+    button,
+    .button {
+      color: $core1;
+      box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.5);
+    }
+  }
+  
