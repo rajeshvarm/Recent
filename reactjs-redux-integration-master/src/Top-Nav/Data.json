@@ -1,0 +1,340 @@
+{
+    "responseCode": "0",
+    "partyId": "67500210348",
+    "transactionId": "1234",
+    "sourceSystem": "UI",
+    "data": {
+      "general": {
+        "tenant": "guidewell"
+      },
+      "myaccount": {
+        "image": "/images/user.jpg",
+        "key": "myaccount",
+        "title": "MyAccount",
+        "link": "/myAccount"
+      },
+      "navigation": [
+        {
+          "title": "Home",
+          "key": "home",
+          "link": "/",
+          "subnav": []
+        },
+        {
+          "Title": "Coverage",
+          "key": "coverage",
+          "link": "",
+          "subnav": [
+            {
+              "title": "Claims",
+              "key": "claims",
+              "link": "/claims"
+            },
+            {
+              "title": "Appeals",
+              "key": "appeals",
+              "link": "/appeals"
+            },
+            {
+              "title": "Authorizations",
+              "key": "authorizations",
+              "link": "/authorizations"
+            },
+            {
+              "title": "Health Statement",
+              "key": "health-statements",
+              "link": "/healthstatements"
+            },
+            {
+              "title": "Benefits",
+              "key": "benefits",
+              "link": "/benefits"
+            },
+            {
+              "title": "Deductibles & Out-of-Pocket",
+              "key": "deductibles",
+              "link": "/deductibles"
+            },
+            {
+              "title": "ID Card",
+              "key": "id-card",
+              "link": "/idcard"
+            },
+            {
+              "title": "Documents & Forms",
+              "key": "Documents & Forms",
+              "link": "/documents"
+            },
+            {
+              "title": "Glossary",
+              "key": "glossary",
+              "link": "/glossary"
+            },
+            {
+              "title": "Bill Pay",
+              "key": "billpay",
+              "link": "/billpay"
+            }
+          ]
+        },
+        {
+          "Title": "Care Plan",
+          "key": "care-plan",
+          "link": "",
+          "subnav": [
+            {
+              "title": "Care Plan",
+              "key": "care-plan",
+              "link": "/careplan"
+            },
+            {
+              "title": "Heath Records",
+              "key": "health-records",
+              "link": "/healthrecords"
+            },
+            {
+              "title": "Risk Factors",
+              "key": "risk-factors",
+              "link": "/riskfactors"
+            },
+            {
+              "title": "Vitals",
+              "key": "vitals",
+              "link": "/vitals"
+            },
+            {
+              "title": "Goals",
+              "key": "goals",
+              "link": "/goals"
+            },
+            {
+              "title": "Activities",
+              "key": "activities",
+              "link": "/activities"
+            },
+            {
+              "title": "Challenges",
+              "key": "challenges",
+              "link": "/challenges"
+            },
+            {
+              "title": "Events",
+              "key": "events",
+              "link": "/events"
+            },
+            {
+              "title": "Programs",
+              "key": "programs",
+              "link": "/programs"
+            },
+            {
+              "title": "Communities",
+              "key": "communities",
+              "link": "/communities"
+            },
+            {
+              "title": "Articles",
+              "key": "articles",
+              "link": "/articles"
+            },
+            {
+              "title": "Rewards",
+              "key": "rewards",
+              "link": "/rewards"
+            }
+          ]
+        },
+        {
+          "Title": "Care Team",
+          "key": "care-team",
+          "link": "",
+          "subnav": [
+            {
+              "title": "My Care Team",
+              "key": "my-care-team",
+              "link": "/mycareteam"
+            },
+            {
+              "title": "Invite a Member",
+              "key": "invite-a-member",
+              "link": "/inviteamember"
+            }
+          ]
+        },
+        {
+          "Title": "Find Care",
+          "key": "find-care",
+          "link": "/findcare",
+          "subnav": [
+            {
+              "title": "Find Care",
+              "key": "find-care",
+              "link": "/findcare"
+            },
+            {
+              "title": "Telemedicine",
+              "key": "telemedicine",
+              "link": "/telemedicine"
+            },
+            {
+              "title": "Urgent Care",
+              "key": "urgent-care",
+              "link": "/urgentcare"
+            },
+            {
+              "title": "Book Appointments",
+              "key": "book-appointments",
+              "link": "/bookappointments"
+            },
+            {
+              "title": "Doctors & Hospitals Nationally",
+              "key": "doctors-hospitals-nationally",
+              "link": "/national"
+            },
+            {
+              "title": "Doctors & Hospitals Worldwide",
+              "key": "doctors-hospitals-worldwide",
+              "link": "/worldwide"
+            },
+            {
+              "title": "Doctors & Hospitals Worldwide",
+              "key": "doctors-hospitals-worldwide",
+              "link": "/worldwide"
+            },
+            {
+              "title": "Compare Medical Costs",
+              "key": "medical-costs",
+              "link": "/medicalcosts"
+            },
+            {
+              "title": "Compare Drug Pricing",
+              "key": "drug-pricing",
+              "link": "/drugpricing"
+            }
+          ]
+        }
+      ],
+      "dashboardpref": [
+        {
+          "title": "claims",
+          "key": "claims",
+          "link": "/claims"
+        },
+        {
+          "title": "ID Card",
+          "key": "id-card",
+          "link": "/idcard"
+        },
+        {
+          "title": "Find Care",
+          "key": "find-care",
+          "link": "/findcare"
+        },
+        {
+          "title": "Activities",
+          "key": "activities",
+          "link": "/activities"
+        },
+        {
+          "title": "Appointments",
+          "key": "appointments",
+          "link": "/appointments"
+        },
+        {
+          "title": "Rewards",
+          "key": "rewards",
+          "link": "/rewards"
+        }
+      ],
+      "memberView": {
+        "MemberFirstname": "PEARL",
+        "MemberLastname": "CORIGLIANO",
+        "isEmailVerified": "true",
+        "email": "john.doe@abc.com",
+        "smokerInd": "true",
+        "memberid": "67500210348",
+        "phoneNum": "9049056072",
+        "isPhoneNumVerified": "true",
+        "isDelegate": "false",
+        "delegateInfo": {},
+        "contract": [
+          {
+            "contractType": "health",
+            "contractID": "H46921375",
+            "productInfo": {
+              "productname": "M&M",
+              "productDesc": "Medicare & More",
+              "productID": [
+                "000030266",
+                "000033753",
+                "000033936",
+                "000058554",
+                "000059577"
+              ]
+            },
+            "relationship": "subscriber",
+            "status": "active",
+            "startdate": "01/01/2010",
+            "enddate": "12/31/9999",
+            "BenefitEffDate": "01/01/2018",
+            "planType": "BLUEMEDICARE HMO CLASSIC PL 1",
+            "relationshipCode": "01",
+            "visibility": {
+              "member": {
+                "hasPrimeLink": "true",
+                "hasCQT": "false"
+              },
+              "delegate": {
+                "hasPrimeLink": "true",
+                "hasCQT": "false",
+                "hasAccountProfile": "true"
+              }
+            },
+            "integratedproduct": {
+              "dental": "true",
+              "dentalplantype": "",
+              "pharma": "true",
+              "pharmaplantype": "BLUEMEDICARE CLASSIC RX PL 1",
+              "vision": "true",
+              "visionplantype": ""
+            }
+          },
+          {
+            "contractType": "dental",
+            "ContractID": "D1304571601",
+            "productInfo": {
+              "productname": "M&M",
+              "productDesc": "Medicare & More",
+              "productID": [
+                "000030266",
+                "000033753",
+                "000033936",
+                "000058554",
+                "000059577"
+              ]
+            },
+            "relationship": "subscriber",
+            "status": "active",
+            "startdate": "01/01/2019",
+            "enddate": "12/31/9999",
+            "BenefitEffDate": "01/01/2019",
+            "planType": "BLUEMEDICARE DENTAL",
+            "relationshipCode": "01",
+            "visibility": {
+              "member": {
+                "hasPrimeLink": "true",
+                "hasCQT": "false"
+              },
+              "delegate": {
+                "hasPrimeLink": "true",
+                "hasCQT": "false",
+                "hasAccountProfile": "true"
+              }
+            },
+            "integratedproduct": {}
+          }
+        ],
+        "partyId": "67500210348"
+      }
+    }
+  }
