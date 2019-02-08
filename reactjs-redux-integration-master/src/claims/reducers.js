@@ -8,7 +8,7 @@ import {priceUSDFormat} from 'modules/Utility';
 const INITIAL_STATE = new Map({
   [GlobalConstants.PROP_FETCHING]: false,
   [ClaimsConstants.PROP_CLAIMS_DATA]: [],
-  [ClaimsConstants.PROP_FILTERS]: [],
+  [ClaimsConstants.PROP_FILTERS]: {},
   [ClaimsConstants.PROP_COLUMNS]: [],
   [ClaimsConstants.PROP_FILTERED_DATA]: [],
   [ClaimsConstants.PROP_ISLOADED]: false,
@@ -26,6 +26,8 @@ const INITIAL_STATE = new Map({
           m.set(GlobalConstants.PROP_FETCHING, false),
           m.set(ClaimsConstants.PROP_CLAIMS_DATA, claimsData)
           m.set(ClaimsConstants.PROP_FILTERED_DATA, claimsData)
+          m.set(ClaimsConstants.PROP_FILTERS, action.filters)
+          m.set(ClaimsConstants.PROP_TOTAL_COUNT, action.totalCount)
         });
       case Actions.FETCH_CLAIMS_FAILURE:
         return state.withMutations(m => {

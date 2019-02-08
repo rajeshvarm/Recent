@@ -11,10 +11,10 @@ export function fetchFilters() {
     });
 
     const partyId = window.config.partyId
-    //const url =`/mlp/api/v1/mlpsvc/claims/filterdata/10000053588?sourceSystem=UI`;
+    //const url =`/mlp/api/v1/mlpsvc/claims/filterdata/${partyId}?transactionId=1234&sourceSystem=UI`;
     
     // switch to complete path if local doesn't respond to relative path 
-    const url =`http://mlp-tsta.ose-dev.bcbsfl.com/mlp/api/v1/mlpsvc/claims/filterdata/10000053588?sourceSystem=UI`
+    const url =`http://mlp-tsta.ose-dev.bcbsfl.com/mlp/api/v1/mlpsvc/claims/filterdata/10000053588?transactionId=1234&sourceSystem=UI`
     return axios
     //read only call
       //.get('../data/filterData.json')
@@ -23,7 +23,7 @@ export function fetchFilters() {
           console.log('res filter', res)
           dispatch({
             type: FETCH_FILTER_SUCCESS,
-            filterData: res.data.data.data.filterData
+            filterData: res.data.data
           });
       })
       .catch(error => {

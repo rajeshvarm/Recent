@@ -3,7 +3,7 @@ import { translate } from "react-i18next";
 
 import UICheckSelection from "UI/UICheckSelection";
 import UIAccordion from "UI/UIAccordion";
-import Loader from 'components/Loader';
+import Loader from "components/Loader";
 import FilterList from "./FilterList";
 import * as FilterConstants from "constants/claims";
 import { connect } from 'react-redux';
@@ -26,7 +26,8 @@ class Filters extends Component {
 
   filterListInit = (type = FilterConstants.PROP_INIT) => {
     let filters = { ... this.state.filters };
-    for (let key in this.props.data.get(FilterConstants.PROP_FILTER_DATA)) {
+    let filterData = this.props.data.get(FilterConstants.PROP_FILTER_DATA) && this.props.data.get(FilterConstants.PROP_FILTER_DATA).toJS();
+    for (let key in filterData) {
       if (!filters[key] || type === FilterConstants.PROP_CLEAR) {
         filters[key] = [];
       }
@@ -104,6 +105,19 @@ class Filters extends Component {
     filterData.forEach((list, i) => {
       list['body'] = this.listContent(list, selectionFilter)
     });
+    let accordion = ( <UIAccordion 
+                        className="accordion-filter"
+                        openNextPanel={true}
+                        allowManyPanelsToBeOpen={true}
+                        icon={false}
+                        openAllNPanels={4}
+                        >
+                        {filterData}
+                        </UIAccordion>)
+    if(this.props.data.get(GlobalConstants.PROP_FETCHING)){
+      accordion = <div class="cover"><div class="text-center"></div><div class="loader"></div></div>
+    }
+
     return (
       <div className={this.state.isFilters ? 'active filter-list-content shadow' : 'in-active filter-list-content shadow'}>
         {this.state.isFilters &&
@@ -118,12 +132,7 @@ class Filters extends Component {
             </div>
             <h1 className="padding-left-6x">{t('table:filter.filter')}</h1>
             <div className="sidenav-content">
-              <Loader isFetching={this.props.data.get(GlobalConstants.PROP_FETCHING)}>
-                <UIAccordion className="accordion-filter"
-                  openNextPanel={true} allowManyPanelsToBeOpen={true} icon={false} openAllNPanels={4}>
-                  {filterData}
-                </UIAccordion>
-              </Loader>
+              {accordion}
             </div>
             <div className="row collapse fixed-button padding-2x padding-top-4x">
               <div className="columns small-12 ">

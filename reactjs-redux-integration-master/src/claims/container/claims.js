@@ -47,7 +47,7 @@ class Claims extends Component {
   }
 
   componentDidMount() {
-    this.props.dispatch(Actions.fetchClaims({}));
+    this.props.dispatch(Actions.fetchClaims({range:[0, 9]}));
   }
   
   componentWillReceiveProps(nextProps) {
@@ -63,21 +63,19 @@ class Claims extends Component {
   }
 
   toggleDataList = () => {
-    this.props.dispatch(Actions.toggleList())
+    let request = this.props.data.get(Constants.PROP_FILTERS);
+    // let addNumber = `${this.props.data.totalCount-request.range[1] >= 10 ? 10 : this.props.data.totalCount-request.range[1]}`;
+    request.range[1] = request.range[1] + 10;
+    this.props.dispatch(Actions.fetchClaims(request));
   }
 
-  searchList = (event) => {
-    let { value } = event.target
-    this.setState({ value }, () => {
-      let updatedList = this.props.data.get(Constants.PROP_FILTERED_DATA);
-      let searchValue = this.state.value.toLowerCase();
-      updatedList = updatedList.toJS().filter(item => {
-        return (Object.keys(item).some(key => item[key].toString().toLowerCase().search(
-          searchValue) !== -1))
-      });
-      this.setState({ searchResults: updatedList });
-    })
-  };
+  searchList = ($event) => {
+    let updatedList = this.props.data.get(Constants.PROP_FILTERED_DATA);
+    updatedList = updatedList.filter(item => {
+      return (Object.keys(item).some(key => item[key].toString().toLowerCase().includes($event.target.value.toLowerCase())))
+    });
+    this.setState({ searchResults: updatedList }); 
+  }
 
   update = (key, value) => {
     console.log("@@@ UPDATE; key,value",key,value)
@@ -184,7 +182,7 @@ class Claims extends Component {
       <div className="row">
         <span class="icon icon-external-link icon-2x" aria-hidden="true" />
         <h2 id="modal-title">Export</h2>
-        <button class="close right" aria-label="close dialog" title="close dialog" onClick={this.toggleDownloadClaimsModalVisibility} />
+        <button class="naked close right" aria-label="close dialog" title="close dialog" onClick={this.toggleDownloadClaimsModalVisibility} />
         { this.state.modalStepNumber == 1
           ? this.getDownloadClaimsModalStepOneContent(t)
           : this.getDownloadClaimsModalStepTwoContent(t) }
@@ -214,7 +212,7 @@ class Claims extends Component {
         <button onClick={this.toggleDownloadClaimsModalVisibility} class="secondary">{t("button.close")}</button>
       </div>
       <div class="columns small-6 text-center">
-        <button onClick={this.handleClaimsModalNext} class="primary">{t("button.next")}</button>
+        <button onClick={this.handleClaimsModalNext} class="primary core2">{t("button.next")}</button>
       </div>
     </div>
   )
@@ -241,7 +239,7 @@ class Claims extends Component {
         <button onClick={this.resetDownloadClaimsModalToStepOne} class="secondary">{t("button.back")}</button>
       </div>
       <div class="columns small-6 text-center">
-        <button onClick={this.handleClaimsModalDownload} class="primary">{t("button.download")}</button>
+        <button onClick={this.handleClaimsModalDownload} class="primary core2">{t("button.download")}</button>
       </div>
     </div>
   )
@@ -256,8 +254,9 @@ class Claims extends Component {
   /// @@@@@@@@ RENDERS ....................
 
   render() {
+    // console.log('checking',this.props.data.get(Constants.PROP_FILTERS))
+    let showMore = this.props.data.get(Constants.PROP_FILTERS)
     const { t } = this.props;
-    const DEFAULTROWDISPLAY = 10;
     const filterOptions = [
       {
         label: "Plan Year",
@@ -317,7 +316,7 @@ class Claims extends Component {
     ]
     const ariaLabelKey = ['facilityprovider', 'receiveddate'];
     const notification = { title: "Close savings message", ariaLabel: "Close savings message", onClose: this.closeNotification }
-    const filteredDataLength = this.props.data.get(Constants.PROP_FILTERED_DATA).length;
+    const filteredDataLength = this.state.searchResults.length;
     const isLoaded = this.props.data.get(Constants.PROP_ISLOADED);
     return (
       <Fragment>
@@ -400,20 +399,16 @@ class Claims extends Component {
             />
           </div>
           <div className="desktop-view columns small-12 medium -3 large-3 top-1x text-right" aria-describedby={this.props.name}>
-            {t('table:table.displaying')} {isLoaded || filteredDataLength < DEFAULTROWDISPLAY ?
-              filteredDataLength
-              :
-              DEFAULTROWDISPLAY}/{filteredDataLength} {t('table:table.claims')}
+            {t('table:table.displaying')} {this.props.data.get(Constants.PROP_TOTAL_COUNT)}/{filteredDataLength} {t('table:table.claims')}
           </div>
         </div>
         <Loader isFetching={this.props.data.get(GlobalConstants.PROP_FETCHING)}>
           <UITable
             data={this.state.searchResults}
             headers={columns}
-            defaultRowDisplay={DEFAULTROWDISPLAY}
             name={t("claims:claims")}
             sortable={true}
-            pageLink={links.CLAIMSOVERVIEW}
+            pageLink={links.CLAIMDETAIL}
             providerRowDisplay='facilityprovider'
             uniqueKey="claimId"
             showDetails={true}
@@ -421,7 +416,7 @@ class Claims extends Component {
             linkAriaLabelKey={ariaLabelKey}
             filterAriaControl="sidenav claims"
           />
-          {!isLoaded && filteredDataLength > DEFAULTROWDISPLAY && (
+          {showMore.range && this.props.data.get(Constants.PROP_TOTAL_COUNT) >= showMore.range[1] && (
               <div className="row top-1x text-center">
                 <div className="columns small-12 ">
                   <button
@@ -434,7 +429,7 @@ class Claims extends Component {
                   </button>
                 </div>
               </div>
-            )}
+            )} 
         </Loader>
 
         {/* Export/Download Claims Modal Content  */}
