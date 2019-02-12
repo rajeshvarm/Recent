@@ -64,7 +64,6 @@ class Claims extends Component {
 
   toggleDataList = () => {
     let request = this.props.data.get(Constants.PROP_FILTERS);
-    // let addNumber = `${this.props.data.totalCount-request.range[1] >= 10 ? 10 : this.props.data.totalCount-request.range[1]}`;
     request.range[1] = request.range[1] + 10;
     this.props.dispatch(Actions.fetchClaims(request));
   }
@@ -254,8 +253,7 @@ class Claims extends Component {
   /// @@@@@@@@ RENDERS ....................
 
   render() {
-    // console.log('checking',this.props.data.get(Constants.PROP_FILTERS))
-    let showMore = this.props.data.get(Constants.PROP_FILTERS)
+    let filters = this.props.data.get(Constants.PROP_FILTERS)
     const { t } = this.props;
     const filterOptions = [
       {
@@ -416,7 +414,8 @@ class Claims extends Component {
             linkAriaLabelKey={ariaLabelKey}
             filterAriaControl="sidenav claims"
           />
-          {showMore.range && this.props.data.get(Constants.PROP_TOTAL_COUNT) >= showMore.range[1] && (
+          {/* Testing don't want view more button to be fixed now, when they are okay can comment out this code 
+           {filters.range && this.props.data.get(Constants.PROP_TOTAL_COUNT) >= filters.range[1] && ( 
               <div className="row top-1x text-center">
                 <div className="columns small-12 ">
                   <button
@@ -429,7 +428,7 @@ class Claims extends Component {
                   </button>
                 </div>
               </div>
-            )} 
+             )}  */}
         </Loader>
 
         {/* Export/Download Claims Modal Content  */}

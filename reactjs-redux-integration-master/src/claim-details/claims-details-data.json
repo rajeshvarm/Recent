@@ -1,0 +1,60 @@
+{
+    "responseCode": "0",
+    "description": "OK",
+    "partyId": "48750257221",
+    "claimid": "10001",
+    "transactionId": "1234",
+    "sourceSystem": "MLP",
+    "data": {
+      "claimDetails": {
+        "status": "Processed",
+        "claimProcessedDate": "11/02/2018",
+        "memberName": "Matthew Parker",
+        "memberNumber": "655453434",
+        "providerName": "Kylie Jones",
+        "claimType": "Office/Out-patient vist",
+        "diagnosisCode": "SV123"
+      },
+      "claimPaid": {
+        "providerBilled": "$100",
+        "serviceMemberDiscount": "-$60",
+        "serviceNetAmountCharged": "$40",
+        "serviceFloridaBluePaid": "-$20",
+        "totalMemberResponsibility": "$20 "
+      },
+      "services": [
+        {
+          "claimServiceDateStart": "09/15/2018",
+          "claimServiceDateEnd": "09/21/2018",
+          "serviceType": "Office/Outpatient visit (7907)",
+          "serviceProvider": "Colins,John Smith",
+          "providerBilled": "$100",
+          "serviceMemberDiscount": "-$60",
+          "serviceNetAmountCharged": "$40",
+          "serviceFloridaBluePaid": "-$20",
+          "serviceMemberResponsibility": "$20",
+          "deductibleAmount": "$20",
+          "copaymentAmount": "$53.40",
+          "coinsuranceAmount": "$83.95",
+          "coinsurancePercentage": "30%",
+          "serviceRemarks": "Outpatient visit with a Mammogram (code: F3950)"
+        },
+        {
+          "claimServiceDateStart": "09/15/2018",
+          "claimServiceDateEnd": "09/21/2018",
+          "serviceType": "Office/Outpatient visit (7907)",
+          "serviceProvider": "Colins,John Smith",
+          "providerBilled": "$368.03",
+          "serviceMemberDiscount": "-$114.81",
+          "serviceNetAmountCharged": "$283.22",
+          "serviceFloridaBluePaid": "$103.40",
+          "serviceMemberResponsibility": "$79.82",
+          "deductibleAmount": "$20",
+          "copaymentAmount": "$33.20",
+          "coinsuranceAmount": "$23.05",
+          "coinsurancePercentage": "30%",
+          "serviceRemarks": "Outpatient visit with a Mammogram (code: F3950)"
+        }
+      ]
+    }
+  }

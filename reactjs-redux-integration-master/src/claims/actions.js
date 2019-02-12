@@ -14,10 +14,10 @@ export function fetchClaims(request) {
     });
 
     const partyId = window.config.partyId
-    //const url =`/mlp/api/v1/mlpsvc/claims/${partyId}?transactionId=1234&sourceSystem=UI`;
+    const url = `/mlp/api/v1/mlpsvc/claims/${partyId}?transactionId=1234&sourceSystem=UI`;
 
     // switch to complete path if local doesn't respond to relative path 
-    const url =`http://mlp-tsta.ose-dev.bcbsfl.com/mlp/api/v1/mlpsvc/claims/10000053588?transactionId=1234&sourceSystem=UI`
+    //const url =`http://mlp-tsta.ose-dev.bcbsfl.com/mlp/api/v1/mlpsvc/claims/${partyId}?transactionId=1234&sourceSystem=UI`
     return axios
       .post(url, request)
       .then(res => {
