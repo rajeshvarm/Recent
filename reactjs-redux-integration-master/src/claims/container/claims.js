@@ -2,6 +2,8 @@ import React, { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { translate } from "react-i18next";
 import { connect } from 'react-redux';
+import v4 from "uuid/v4";
+
 import { resetDocumentKeyboardFocus, confirmConstraints } from 'ui-utilities';
 import { getClaimsDownloadChoices, getClaimsFileTypeChoices } from 'modules/ChoicesHelper';
 import { getRequiredField } from 'modules/ConstraintHelper';
@@ -34,6 +36,8 @@ class Claims extends Component {
     this.claimsModalStepOneConstraints = {[Constants.FIELD_DOWNLOAD_CLAIMS_RANGE]: getRequiredField(this.props.t)};
     this.claimsModalStepTwoConstraints = {[Constants.FIELD_DOWNLOAD_CLAIMS_FILE_TYPE]: getRequiredField(this.props.t)};
     this.claimsFileTypeChoices = getClaimsFileTypeChoices(this.props.t);
+    this.uuid = v4();
+    this.uuid2 = v4();
   };
 
   ingressDataTransform = (props) => {
@@ -49,7 +53,7 @@ class Claims extends Component {
   componentDidMount() {
     this.props.dispatch(Actions.fetchClaims({range:[0, 9]}));
   }
-  
+
   componentWillReceiveProps(nextProps) {
     this.setState({ searchResults: nextProps.data.get(Constants.PROP_FILTERED_DATA) })
   }
@@ -73,7 +77,7 @@ class Claims extends Component {
     updatedList = updatedList.filter(item => {
       return (Object.keys(item).some(key => item[key].toString().toLowerCase().includes($event.target.value.toLowerCase())))
     });
-    this.setState({ searchResults: updatedList }); 
+    this.setState({ searchResults: updatedList });
   }
 
   update = (key, value) => {
@@ -102,13 +106,13 @@ class Claims extends Component {
 
   toggleDownloadClaimsModalVisibility = () => {
     this.setState(prevState => {
-      //if modal is open, close it and reset: 
+      //if modal is open, close it and reset:
       //-state.modalStepNumber that determines the content rendered on modal close
       //-radio button groups' state
       //-UI validation errors
       if (prevState.downloadClaimsModalVisibility) {
-        return { 
-          downloadClaimsModalVisibility: !prevState.downloadClaimsModalVisibility, 
+        return {
+          downloadClaimsModalVisibility: !prevState.downloadClaimsModalVisibility,
           modalStepNumber: 1,
           error: null,
           [Constants.FIELD_DOWNLOAD_CLAIMS_RANGE]: null,
@@ -117,7 +121,7 @@ class Claims extends Component {
       }
       //update the claims choices to be used in the radio button group that's part of the download claims modal
       /* TO-DO: THESE DATES SHOULD BE DYNAMICALLY DETERMINED BASED ON CURRENT CLAIMS FILTERS! */
-      this.claimsDownloadChoices = getClaimsDownloadChoices(this.props.t, 'Oct. 2, 2018', 'Oct. 2, 2019');
+      this.claimsDownloadChoices = getClaimsDownloadChoices(this.props.t, '10/22/2019', '10/22/2015');
       return { downloadClaimsModalVisibility: !prevState.downloadClaimsModalVisibility };
     });
   }
@@ -156,7 +160,7 @@ class Claims extends Component {
     } else {
       const fileType = this.state[Constants.FIELD_DOWNLOAD_CLAIMS_FILE_TYPE];
       this.setState({
-        downloadClaimsModalVisibility: false, 
+        downloadClaimsModalVisibility: false,
         modalStepNumber: 1,
         error: null,
         [Constants.FIELD_DOWNLOAD_CLAIMS_RANGE]: null,
@@ -206,7 +210,7 @@ class Claims extends Component {
           onValidatedChange={this.update}
           errorMessage={this.getErrorMessage(Constants.FIELD_DOWNLOAD_CLAIMS_RANGE, this.state.error)} />
       </div>
-      
+
       <div class="columns small-6 text-center">
         <button onClick={this.toggleDownloadClaimsModalVisibility} class="secondary">{t("button.close")}</button>
       </div>
@@ -233,7 +237,7 @@ class Claims extends Component {
           onValidatedChange={this.update}
           errorMessage={this.getErrorMessage(Constants.FIELD_DOWNLOAD_CLAIMS_FILE_TYPE, this.state.error)} />
       </div>
-      
+
       <div class="columns small-6 text-center">
         <button onClick={this.resetDownloadClaimsModalToStepOne} class="secondary">{t("button.back")}</button>
       </div>
@@ -322,7 +326,7 @@ class Claims extends Component {
           <div className="small-12 medium-4 columns">
             <h1>{t("claims:claims")}</h1>
           </div>
-          <div className="hide-for-small-only medium-8 columns text-right top-2x">
+          <div className="hide-for-small-only hide-for-print medium-8 columns text-right top-2x">
             <button
               aria-haspopup="dialog"
               class="linklike secondary"
@@ -343,7 +347,7 @@ class Claims extends Component {
           /*<UIAlert
             alertType={ALERTS.NOTIFICATION}
             alertTagline={t('claims:alerttitle')}
-            icon="icon circledIconColored icon-money"
+            icon="icon circledIconColored icon-money-fill-circle"
             closeButton={notification}
             className="event notification naked"
           >
@@ -352,14 +356,14 @@ class Claims extends Component {
           </UIAlert>*/
             <UIDropDown
               ddId="savingsAlert"
-              className="notification note"
+              className="notification note hide-for-print"
               ddState={this.state.ddState}
               closeButton={{buttonAction: true, className: "close naked"}}
               buttonAction={this.toggleDropVisibility}
-              children={              
+              children={
                 <div class="row">
                   <div class="columns small-2 medium-1 large-1 text-center">
-                    <span aria-hidden="true" class="icon icon-money"></span>
+                    <span aria-hidden="true" class="icon-3x icon-money-fill-circle positive"></span>
                   </div>
                   <div class="columns small-10 medium-11 large-11">
                     <div class="row">
@@ -375,11 +379,11 @@ class Claims extends Component {
               }
             />
         }
-        <div className="row top-1x">
+        <div className="row top-1x hide-for-print">
           <div className="columns small-3">
             <Link className="button naked mobile-view hide-for-print" to={links.HEALTHINSURANCE}>
               <span aria-hidden="true" className="icon-chevron-left" />{t('claims:back')}
-            </Link>  
+            </Link>
           </div>
           <div className="columns small-9 medium-3 large-3">
             <Filters
@@ -393,11 +397,14 @@ class Claims extends Component {
           </div>
           <div className="columns small-12 medium-6 large-6">
             <SearchBar
-              SearchBar={this.searchList}
+              placeholder="Search My Content"
+              aria-label="search claims"
+              ariaControls={`${this.uuid} ${this.uuid2}`}
+              onValidatedChange={this.searchList}
             />
           </div>
-          <div className="desktop-view columns small-12 medium -3 large-3 top-1x text-right" aria-describedby={this.props.name}>
-            {t('table:table.displaying')} {this.props.data.get(Constants.PROP_TOTAL_COUNT)}/{filteredDataLength} {t('table:table.claims')}
+          <div className="desktop-view columns small-12 medium -3 large-3 top-1x text-right" id={this.uuid} aria-live="polite">
+            {`${t('table:table.displaying')} ${filteredDataLength}/${this.props.data.get(Constants.PROP_TOTAL_COUNT)} ${t('table:table.claims')}`}
           </div>
         </div>
         <Loader isFetching={this.props.data.get(GlobalConstants.PROP_FETCHING)}>
@@ -413,10 +420,10 @@ class Claims extends Component {
             isLoaded={isLoaded}
             linkAriaLabelKey={ariaLabelKey}
             filterAriaControl="sidenav claims"
+            id={this.uuid2}
           />
-          {/* Testing don't want view more button to be fixed now, when they are okay can comment out this code 
-           {filters.range && this.props.data.get(Constants.PROP_TOTAL_COUNT) >= filters.range[1] && ( 
-              <div className="row top-1x text-center">
+           {filters.range && this.props.data.get(Constants.PROP_TOTAL_COUNT) >= filters.range[1] && (
+              <div className="row top-1x text-center hide-for-print">
                 <div className="columns small-12 ">
                   <button
                     type="button"
@@ -428,7 +435,7 @@ class Claims extends Component {
                   </button>
                 </div>
               </div>
-             )}  */}
+             )}
         </Loader>
 
         {/* Export/Download Claims Modal Content  */}

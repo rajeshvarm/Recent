@@ -195,7 +195,7 @@ class ClaimDetail extends Component {
               <div className="columns small-12 medium-7 medium-7 border rounded padding-2x">
                 <div className="row head">
                   <div className="columns">
-                    <span className="icon icon-money padding-right-1x" />
+                    <span className="icon icon-money-fill-circle padding-right-1x" />
                     <strong>Savings Alert!</strong>
                   </div>
                 </div>

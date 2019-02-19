@@ -1,210 +1,241 @@
 {
-    "responseCode": "0",
-    "description": "OK",
-    "partyId": "48750257221",
-    "transactionId": "1234",
-    "sourceSystem": "MLP",
-    "totalCount": 20,
-    "data": [
-      {
-        "claimId": "10001",
-        "service": "01/28/2019",
-        "facility": "Whaleblues",
-        "type": "Pharmacy",
-        "status": "Pending",
-        "claimAppealed": "N",
-        "claimCharge": "$90.15",
-        "yourCost": "$9.15"
-      },
-      {
-        "claimId": "10002",
-        "service": "01/15/2019",
-        "facility": "Whaleblues",
-        "type": "Pharmacy",
-        "status": "Pending",
-        "claimAppealed": "N",
-        "claimCharge": "$90.15",
-        "yourCost": "$9.15"
-      },
-      {
-        "claimId": "10003",
-        "service": "01/04/2019",
-        "facility": "Dr.Pepper",
-        "type": "Dental",
-        "status": "Processed",
-        "claimAppealed": "Y",
-        "claimCharge": "$474.00",
-        "yourCost": "$114.00"
-      },
-      {
-        "claimId": "10004",
-        "service": "12/03/2018",
-        "facility": "Mustard Clinic",
-        "type": "Health",
-        "status": "Processed",
-        "claimAppealed": "N",
-        "claimCharge": "$600.00",
-        "yourCost": "$60.00"
-      },
-      {
-        "claimId": "10005",
-        "service": "11/30/2018",
-        "facility": "Dr. Cavity",
-        "type": "Dental",
-        "status": "Processed",
-        "claimAppealed": "N",
-        "claimCharge": "$1023.00",
-        "yourCost": "$123.00"
-      },
-      {
-        "claimId": "10006",
-        "service": "11/11/2018",
-        "facility": "Zesty Diagnostics",
-        "type": "Health",
-        "status": "Processed",
-        "claimAppealed": "N",
-        "claimCharge": "$717.00",
-        "yourCost": "$0.00"
-      },
-      {
-        "claimId": "10007",
-        "service": "10/01/2018",
-        "facility": "Whaleblues",
-        "type": "Pharmacy",
-        "status": "Processed",
-        "claimAppealed": "N",
-        "claimCharge": "$90.15",
-        "yourCost": "$9.15"
-      },
-      {
-        "claimId": "10008",
-        "service": "09/09/2018",
-        "facility": "Dr.Pepper",
-        "type": "Dental",
-        "status": "Processed",
-        "claimAppealed": "N",
-        "claimCharge": "$474.00",
-        "yourCost": "$114.00"
-      },
-      {
-        "claimId": "10009",
-        "service": "06/11/2018",
-        "facility": "Mustard Clinic",
-        "type": "Health",
-        "status": "Processed",
-        "claimAppealed": "N",
-        "claimCharge": "$600.00",
-        "yourCost": "$60.00"
-      },
-      {
-        "claimId": "10010",
-        "service": "05/01/2018",
-        "facility": "Dr.Cavity",
-        "type": "Dental",
-        "status": "Processed",
-        "claimAppealed": "N",
-        "claimCharge": "$1023.00",
-        "yourCost": "$123.00"
-      },
-      {
-        "claimId": "10011",
-        "service": "03/09/2018",
-        "facility": "Zesty Diagnostics",
-        "type": "Health",
-        "status": "Processed",
-        "claimAppealed": "N",
-        "claimCharge": "$717.00",
-        "yourCost": "$0.00"
-      },
-      {
-        "claimId": "10012",
-        "service": "01/03/2018",
-        "facility": "Whaleblues",
-        "type": "Pharmacy",
-        "status": "Processed",
-        "claimAppealed": "N",
-        "claimCharge": "$90.15",
-        "yourCost": "$9.15"
-      },
-      {
-        "claimId": "10013",
-        "service": "12/03/2017",
-        "facility": "Dr.Pepper",
-        "type": "Dental",
-        "status": "Processed",
-        "claimAppealed": "N",
-        "claimCharge": "$474.00",
-        "yourCost": "$114.00"
-      },
-      {
-        "claimId": "10014",
-        "service": "11/30/2017",
-        "facility": "Mustard Clinic",
-        "type": "Health",
-        "status": "Processed",
-        "claimAppealed": "N",
-        "claimCharge": "$600.00",
-        "yourCost": "$60.00"
-      },
-      {
-        "claimId": "10015",
-        "service": "11/11/2017",
-        "facility": "Dr.Cavity",
-        "type": "Dental",
-        "status": "Processed",
-        "claimAppealed": "N",
-        "claimCharge": "$1023.00",
-        "yourCost": "$123.00"
-      },
-      {
-        "claimId": "10016",
-        "service": "10/01/2017",
-        "facility": "Zesty Diagnostics",
-        "type": "Health",
-        "status": "Processed",
-        "claimAppealed": "N",
-        "claimCharge": "$717.00",
-        "yourCost": "$0.00"
-      },
-      {
-        "claimId": "10017",
-        "service": "09/09/2017",
-        "facility": "Whaleblues",
-        "type": "Pharmacy",
-        "status": "Processed",
-        "claimAppealed": "N",
-        "claimCharge": "$90.15",
-        "yourCost": "$9.15"
-      },
-      {
-        "claimId": "10018",
-        "service": "06/11/2017",
-        "facility": "Dr.Pepper",
-        "type": "Dental",
-        "status": "Processed",
-        "claimAppealed": "N",
-        "claimCharge": "$474.00",
-        "yourCost": "$114.00"
-      },
-      {
-        "claimId": "10019",
-        "service": "05/01/2017",
-        "facility": "Mustard Clinic",
-        "type": "Health",
-        "status": "Processed",
-        "claimAppealed": "N",
-        "claimCharge": "$600.00",
-        "yourCost": "$60.00"
-      },
-      {
-        "claimId": "10020",
-        "service": "03/09/2017",
-        "facility": "Dr.Cavity",
-        "type": "Dental",
-        "status": "Processed",
-        "claimAppealed": "N",
-        "claimCharge": "$1023.00",
-        "yourCost": "$123.00"
-      }
-    ]
-  }
+  "responseCode": "0",
+  "description": "OK",
+  "partyId": "48750257221",
+  "tenantId": "GuideWell",
+  "transactionId": "1234",
+  "sourceSystem": " MLP",
+  "totalCount": 23,
+  "data": [
+    {
+      "claimId": "10001",
+      "service": "01/28/2019",
+      "facility": "Whaleblues",
+      "type": "Pharmacy",
+      "status": "Pending",
+      "claimAppealed": "N",
+      "claimCharge": "$90.15",
+      "yourCost": "$9.15"
+    },
+    {
+      "claimId": "10002",
+      "service": "01/15/2019",
+      "facility": "Whaleblues",
+      "type": "Pharmacy",
+      "status": "Pending",
+      "claimAppealed": "N",
+      "claimCharge": "$90.15",
+      "yourCost": "$9.15"
+    },
+    {
+      "claimId": "10003",
+      "service": "01/04/2019",
+      "facility": "Dr.Pepper",
+      "type": "Dental",
+      "status": "Processed",
+      "claimAppealed": "Y",
+      "claimCharge": "$474.00",
+      "yourCost": "$114.00"
+    },
+    {
+      "claimId": "10004",
+      "service": "12/03/2018",
+      "facility": "Mustard Clinic",
+      "type": "Health",
+      "status": "Processed",
+      "claimAppealed": "N",
+      "claimCharge": "$600.00",
+      "yourCost": "$60.00"
+    },
+    {
+      "claimId": "10005",
+      "service": "11/30/2018",
+      "facility": "Dr. Cavity",
+      "type": "Dental",
+      "status": "Processed",
+      "claimAppealed": "N",
+      "claimCharge": "$1023.00",
+      "yourCost": "$123.00"
+    },
+    {
+      "claimId": "10006",
+      "service": "11/11/2018",
+      "facility": "Zesty Diagnostics",
+      "type": "Health",
+      "status": "Processed",
+      "claimAppealed": "N",
+      "claimCharge": "$717.00",
+      "yourCost": "$0.00"
+    },
+    {
+      "claimId": "10007",
+      "service": "10/01/2018",
+      "facility": "Whaleblues",
+      "type": "Pharmacy",
+      "status": "Processed",
+      "claimAppealed": "N",
+      "claimCharge": "$90.15",
+      "yourCost": "$9.15"
+    },
+    {
+      "claimId": "10008",
+      "service": "09/09/2018",
+      "facility": "Dr.Pepper",
+      "type": "Dental",
+      "status": "Processed",
+      "claimAppealed": "N",
+      "claimCharge": "$474.00",
+      "yourCost": "$114.00"
+    },
+    {
+      "claimId": "10009",
+      "service": "06/11/2018",
+      "facility": "Mustard Clinic",
+      "type": "Health",
+      "status": "Processed",
+      "claimAppealed": "N",
+      "claimCharge": "$600.00",
+      "yourCost": "$60.00"
+    },
+    {
+      "claimId": "10010",
+      "service": "05/01/2018",
+      "facility": "Dr.Cavity",
+      "type": "Dental",
+      "status": "Processed",
+      "claimAppealed": "N",
+      "claimCharge": "$1023.00",
+      "yourCost": "$123.00"
+    },
+    {
+      "claimId": "10011",
+      "service": "03/09/2018",
+      "facility": "Zesty Diagnostics",
+      "type": "Health",
+      "status": "Processed",
+      "claimAppealed": "N",
+      "claimCharge": "$717.00",
+      "yourCost": "$0.00"
+    },
+    {
+      "claimId": "10012",
+      "service": "01/03/2018",
+      "facility": "Whaleblues",
+      "type": "Pharmacy",
+      "status": "Processed",
+      "claimAppealed": "N",
+      "claimCharge": "$90.15",
+      "yourCost": "$9.15"
+    },
+    {
+      "claimId": "10013",
+      "service": "12/03/2017",
+      "facility": "Dr.Pepper",
+      "type": "Dental",
+      "status": "Processed",
+      "claimAppealed": "N",
+      "claimCharge": "$474.00",
+      "yourCost": "$114.00"
+    },
+    {
+      "claimId": "10014",
+      "service": "11/30/2017",
+      "facility": "Mustard Clinic",
+      "type": "Health",
+      "status": "Processed",
+      "claimAppealed": "N",
+      "claimCharge": "$600.00",
+      "yourCost": "$60.00"
+    },
+    {
+      "claimId": "10015",
+      "service": "11/11/2017",
+      "facility": "Dr.Cavity",
+      "type": "Dental",
+      "status": "Processed",
+      "claimAppealed": "N",
+      "claimCharge": "$1023.00",
+      "yourCost": "$123.00"
+    },
+    {
+      "claimId": "10016",
+      "service": "10/01/2017",
+      "facility": "Zesty Diagnostics",
+      "type": "Health",
+      "status": "Processed",
+      "claimAppealed": "N",
+      "claimCharge": "$717.00",
+      "yourCost": "$0.00"
+    },
+    {
+      "claimId": "10017",
+      "service": "09/09/2017",
+      "facility": "Whaleblues",
+      "type": "Pharmacy",
+      "status": "Processed",
+      "claimAppealed": "N",
+      "claimCharge": "$90.15",
+      "yourCost": "$9.15"
+    },
+    {
+      "claimId": "10018",
+      "service": "06/11/2017",
+      "facility": "Dr.Pepper",
+      "type": "Dental",
+      "status": "Processed",
+      "claimAppealed": "N",
+      "claimCharge": "$474.00",
+      "yourCost": "$114.00"
+    },
+    {
+      "claimId": "10019",
+      "service": "05/01/2017",
+      "facility": "Mustard Clinic",
+      "type": "Health",
+      "status": "Processed",
+      "claimAppealed": "N",
+      "claimCharge": "$600.00",
+      "yourCost": "$60.00"
+    },
+    {
+      "claimId": "10020",
+      "service": "03/09/2017",
+      "facility": "Dr.Cavity",
+      "type": "Dental",
+      "status": "Processed",
+      "claimAppealed": "N",
+      "claimCharge": "$1023.00",
+      "yourCost": "$123.00"
+    },
+    {
+      "claimId": "10021",
+      "service": "02/03/2017",
+      "facility": "Zesty Diagnostics",
+      "type": "Health",
+      "status": "Processed",
+      "claimAppealed": "N",
+      "claimCharge": "$717.00",
+      "yourCost": "$0.00"
+    },
+    {
+      "claimId": "10022",
+      "service": "01/28/2017",
+      "facility": "Dr.Pepper",
+      "type": "Dental",
+      "status": "Processed",
+      "claimAppealed": "N",
+      "claimCharge": "$474.00",
+      "yourCost": "$114.00"
+    },
+    {
+      "claimId": "10023",
+      "service": "01/10/2017",
+      "facility": "Mustard Clinic",
+      "type": "Health",
+      "status": "Processed",
+      "claimAppealed": "N",
+      "claimCharge": "$600.00",
+      "yourCost": "$60.00"
+    }
+  ]
+}
