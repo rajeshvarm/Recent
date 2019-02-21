@@ -12,7 +12,7 @@ class UITable extends Component {
       data: this.props.data,
       sort: {
         column: "",
-        direction: "sorting_asc",
+        direction: "icon icon-arrow-up",
         sortname: ""
       },
       isFilterData: [...this.props.data],
@@ -41,11 +41,11 @@ class UITable extends Component {
       if (
         tableSort.column &&
         tableSort.column === sortKey &&
-        tableSort.direction === "sorting_asc"
+        tableSort.direction === "icon icon-arrow-up"
       ) {
         tableSort = {
           column: sortKey,
-          direction: "sorting_desc",
+          direction: "icon icon-arrow-down",
           sortname: "descending"
         };
         sortData.sort((b, a) => {
@@ -54,7 +54,7 @@ class UITable extends Component {
       } else {
         tableSort = {
           column: sortKey,
-          direction: "sorting_asc",
+          direction: "icon icon-arrow-up",
           sortname: "ascending"
         };
         sortData.sort((a, b) => {
@@ -73,14 +73,14 @@ class UITable extends Component {
 
     return (
               <Fragment>               
-                <table id={this.props.name} className="dataTable responsiveTable">
+                <table id={this.props.name} className="dataTable responsiveTable bottom-1x">
                   <thead>
                     <tr>
                       {this.state.headers.map((item, index) => {
                         let classname;
                         let sortname;
                         if (item.sort) {
-                          classname = "sorting";
+                          classname = "icon icon-sort-ascend-to-descend";
                           if (
                             this.state.sort.column &&
                             this.state.sort.column === item.key
@@ -135,14 +135,14 @@ class UITable extends Component {
                                 className={obj.columnClass}
                               >
                               {obj.key === "yourCost" && rowData.savedCost
-                                  ? <span className="desktop-view icon circledIconColoredSmall icon-money"></span>
+                                  ? <span className="desktop-view icon circledIconColoredSmall icon-money-fill-circle"></span>
                                   : ""}
                                 {rowData[obj.key]}
                                 <br/>
                                 {obj.key === "status" && rowData.claimAppealed === "Y"
                                   ? 
                                   <a href="#" className="desktop-view icon">
-                                    <span className="icon icon-1x icon-exclamation-circle right-1x" aria-hidden="true" aria-label="warning" tabIndex="0"></span>
+                                    <span className="icon icon-1x icon-exclamation-circle-filled right-1x" aria-hidden="true" aria-label="warning" tabIndex="0"></span>
                                     <span>{t('table:table.claimappealed')}</span>
                                   </a>
                                   : ""}

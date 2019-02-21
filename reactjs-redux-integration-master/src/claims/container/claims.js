@@ -178,51 +178,62 @@ class Claims extends Component {
      modal based on state */
   getDownloadClaimsModalContent = t => (
     <UIModal
-      dialogClasses="claims-download-modal"
+      dialogClasses=""
       visible={this.state.downloadClaimsModalVisibility}
       onExit={this.toggleDownloadClaimsModalVisibility}
     >
-      <div className="row">
-        <span class="icon icon-external-link icon-2x" aria-hidden="true" />
-        <h2 id="modal-title">Export</h2>
-        <button class="naked close right" aria-label="close dialog" title="close dialog" onClick={this.toggleDownloadClaimsModalVisibility} />
+      <div class="row head">
+        <div class="columns small-11">
+          <h2 class="hl-large"><span class="icon icon-external-link padding-right-1x" aria-hidden="true" />Export</h2>
+        </div>
+        <div class="columns small-1">
+          <button aria-label="close dialog" title="close dialog" class="close" onClick={this.props.toggleDownloadClaimsModalVisibility} />
+        </div>
+      </div>
+
+
         { this.state.modalStepNumber == 1
           ? this.getDownloadClaimsModalStepOneContent(t)
           : this.getDownloadClaimsModalStepTwoContent(t) }
-      </div>
     </UIModal>
   );
 
   getDownloadClaimsModalStepOneContent = t => (
-    <div>
-      <h3 class="top-1x">{t("claims:downloadModal.step") + this.state.modalStepNumber + t("claims:downloadModal.of2")}</h3>
-      <p>{t("claims:downloadModal.subheader1")}</p>
+    <Fragment>
+      <div class="row body modal-padding">
+        <div class="columns small-12 collapse">
+          <h3 class="hl-medium">{t("claims:downloadModal.step") + this.state.modalStepNumber + t("claims:downloadModal.of2")}</h3>
+          <p>{t("claims:downloadModal.subheader1")}</p>
 
-      <div class="mlp-radio-buttons bottom-3x">
-        <UIRadioSelection
-          layout='COLUMN0'
-          required={true}
-          label=""
-          name={Constants.FIELD_DOWNLOAD_CLAIMS_RANGE}
-          inline={false}
-          defaultValue={this.state[Constants.FIELD_DOWNLOAD_CLAIMS_RANGE]}
-          choices={this.claimsDownloadChoices}
-          onValidatedChange={this.update}
-          errorMessage={this.getErrorMessage(Constants.FIELD_DOWNLOAD_CLAIMS_RANGE, this.state.error)} />
+          <div class="mlp-radio-buttons bottom-3x">
+            <UIRadioSelection
+              layout='COLUMN0'
+              required={true}
+              label=""
+              name={Constants.FIELD_DOWNLOAD_CLAIMS_RANGE}
+              inline={false}
+              defaultValue={this.state[Constants.FIELD_DOWNLOAD_CLAIMS_RANGE]}
+              choices={this.claimsDownloadChoices}
+              onValidatedChange={this.update}
+              errorMessage={this.getErrorMessage(Constants.FIELD_DOWNLOAD_CLAIMS_RANGE, this.state.error)} />
+          </div>
+        </div>
       </div>
 
-      <div class="columns small-6 text-center">
-        <button onClick={this.toggleDownloadClaimsModalVisibility} class="secondary">{t("button.close")}</button>
+      <div class="row footer">
+        <div class="columns small-6 medium-3 large-3">
+          <button onClick={this.toggleDownloadClaimsModalVisibility} class="secondary core2 expand">{t("button.close")}</button>
+        </div>
+        <div class="columns small-6 medium-3 large-3 medium-offset-6 large-offset-6 text-right">
+          <button onClick={this.handleClaimsModalNext} class="primary core2 expand">{t("button.next")}</button>
+        </div>
       </div>
-      <div class="columns small-6 text-center">
-        <button onClick={this.handleClaimsModalNext} class="primary core2">{t("button.next")}</button>
-      </div>
-    </div>
+    </Fragment>
   )
 
   getDownloadClaimsModalStepTwoContent = t => (
     <div>
-      <h3 class="top-1x">{t("claims:downloadModal.step") + this.state.modalStepNumber + t("claims:downloadModal.of2")}</h3>
+      <h3 class="hl-medium">{t("claims:downloadModal.step") + this.state.modalStepNumber + t("claims:downloadModal.of2")}</h3>
       <p>{t("claims:downloadModal.subheader2")}</p>
 
       <div class="mlp-radio-buttons bottom-3x">
@@ -282,15 +293,15 @@ class Claims extends Component {
         sort: true
       },
       {
-        label: t('claims:table.servicedate'),
-        name: "Service Date",
+        label: t('claims:table.service'),
+        name: "Service",
         key: "service",
         sort: true,
         type: 'date'
       },
       {
-        label: t('claims:table.servicetype'),
-        name: "Service Type",
+        label: t('claims:table.type'),
+        name: "Type",
         key: "type",
         sort: true
       },
@@ -322,11 +333,15 @@ class Claims extends Component {
     const isLoaded = this.props.data.get(Constants.PROP_ISLOADED);
     return (
       <Fragment>
-        <div className="row">
-          <div className="small-12 medium-4 columns">
+      {!this.props.data.get(GlobalConstants.PROP_ERROR) ?
+        (<Fragment> 
+          {this.props.data.get(Constants.PROP_TOTAL_COUNT) > 0 ? 
+      (<Fragment>
+        <div class="row">
+          <div class="small-12 medium-4 columns">
             <h1>{t("claims:claims")}</h1>
           </div>
-          <div className="hide-for-small-only hide-for-print medium-8 columns text-right top-2x">
+          <div class="hide-for-small-only hide-for-print medium-8 columns text-right top-2x">
             <button
               aria-haspopup="dialog"
               class="linklike secondary"
@@ -349,29 +364,29 @@ class Claims extends Component {
             alertTagline={t('claims:alerttitle')}
             icon="icon circledIconColored icon-money-fill-circle"
             closeButton={notification}
-            className="event notification naked"
+            class="event notification naked"
           >
-            <span className="padding-left-1x">Next time save <strong>$850</strong> by choosing Urgent Care</span>
-            <a href="#" className="secondary float-right" aria-label="Learn more about savings">{t('claims:learnmore')}</a>
+            <span class="padding-left-1x">Next time save <strong>$850</strong> by choosing Urgent Care</span>
+            <a href="#" class="secondary float-right" aria-label="Learn more about savings">{t('claims:learnmore')}</a>
           </UIAlert>*/
             <UIDropDown
               ddId="savingsAlert"
-              className="notification note hide-for-print"
+              class="notification note hide-for-print bottom-1x"
               ddState={this.state.ddState}
-              closeButton={{buttonAction: true, className: "close naked"}}
+              closeButton={{buttonAction: true, class: "close naked", icon: "icon-close"}}
               buttonAction={this.toggleDropVisibility}
               children={
                 <div class="row">
                   <div class="columns small-2 medium-1 large-1 text-center">
                     <span aria-hidden="true" class="icon-3x icon-money-fill-circle positive"></span>
                   </div>
-                  <div class="columns small-10 medium-11 large-11">
+                  <div class="columns small-10 medium-11 large-11 top-1x">
                     <div class="row">
                       <div class="columns small-12 medium-9 large-9">
                         <span>Next time save <strong>$850</strong> by choosing Urgent Care</span>
                       </div>
                       <div class="columns small-12 medium-3 large-3 medium-text-center large-text-center">
-                        <a href="#" className="secondary" aria-label="Learn more about savings">{t('claims:learnmore')}</a>
+                        <a href="#" class="secondary" aria-label="Learn more about savings">{t('claims:learnmore')}</a>
                       </div>
                     </div>
                   </div>
@@ -379,13 +394,13 @@ class Claims extends Component {
               }
             />
         }
-        <div className="row top-1x hide-for-print">
-          <div className="columns small-3">
-            <Link className="button naked mobile-view hide-for-print" to={links.HEALTHINSURANCE}>
-              <span aria-hidden="true" className="icon-chevron-left" />{t('claims:back')}
+        <div class="row top-1x hide-for-print">
+          <div class="columns small-3">
+            <Link class="button naked mobile-view hide-for-print" to={links.HEALTHINSURANCE}>
+              <span aria-hidden="true" class="icon-chevron-left" />{t('claims:back')}
             </Link>
           </div>
-          <div className="columns small-9 medium-3 large-3">
+          <div class="columns small-9 medium-3 large-3">
             <Filters
               toggleFilters={this.toggleFilters}
               filterAriaControl={this.filterAriaControl}
@@ -395,10 +410,10 @@ class Claims extends Component {
               showMoreKey={['providers']}
             />
           </div>
-          <div className="columns small-12 medium-6 large-6">
+          <div class="columns small-12 medium-6 large-6">
             <SearchBar
               placeholder="Search My Content"
-              aria-label="search claims"
+              ariaLabel="search claims"
               ariaControls={`${this.uuid} ${this.uuid2}`}
               onValidatedChange={this.searchList}
             />
@@ -427,7 +442,7 @@ class Claims extends Component {
                 <div className="columns small-12 ">
                   <button
                     type="button"
-                    className="button secondary core2"
+                    class="button secondary core2"
                     onClick={this.toggleDataList}
                     aria-label="View more Claims"
                   >
@@ -442,7 +457,11 @@ class Claims extends Component {
         <div aria-live="polite">
           {this.getDownloadClaimsModalContent(t)}
         </div>
-      </Fragment>
+      </Fragment>) : <label>No Claims Found</label>
+    }
+  </Fragment>) : (<label className='text-danger'>Error Fetching Data</label>)
+}
+</Fragment>
     );
   }
 }

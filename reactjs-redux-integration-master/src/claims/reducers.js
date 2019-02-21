@@ -7,6 +7,7 @@ import {priceUSDFormat} from 'modules/Utility';
 
 const INITIAL_STATE = new Map({
   [GlobalConstants.PROP_FETCHING]: false,
+  [GlobalConstants.PROP_ERROR]: false,
   [ClaimsConstants.PROP_CLAIMS_DATA]: [],
   [ClaimsConstants.PROP_FILTERS]: {},
   [ClaimsConstants.PROP_COLUMNS]: [],
@@ -18,12 +19,16 @@ const INITIAL_STATE = new Map({
   const ClaimsReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
       case Actions.FETCH_CLAIMS_REQUEST:
-        return state.set(GlobalConstants.PROP_FETCHING, true);
+        return state.withMutations(m => {
+          m.set(GlobalConstants.PROP_FETCHING, true)
+          m.set(GlobalConstants.PROP_ERROR, false)
+        });
 
       case Actions.FETCH_CLAIMS_SUCCESS:
         const { claimsData } = action;
         return state.withMutations(m => {
           m.set(GlobalConstants.PROP_FETCHING, false),
+          m.set(GlobalConstants.PROP_ERROR, false),
           m.set(ClaimsConstants.PROP_CLAIMS_DATA, claimsData)
           m.set(ClaimsConstants.PROP_FILTERED_DATA, claimsData)
           m.set(ClaimsConstants.PROP_FILTERS, action.filters)
@@ -32,7 +37,8 @@ const INITIAL_STATE = new Map({
       case Actions.FETCH_CLAIMS_FAILURE:
         return state.withMutations(m => {
           m.set(GlobalConstants.PROP_FETCHING, false)
-          m.set(GlobalConstants.PROP_ERROR, action.error)
+          m.set(GlobalConstants.PROP_ERROR, true),
+          m.set(GlobalConstants.PROP_ERROR, action.claimsError)
         });
         
       case Actions.FILTER_CLAIMS_DATA:
