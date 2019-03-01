@@ -30,7 +30,7 @@ class FilterList extends Component {
 				{this.props.dataList.data.length > this.props.filterMaxCount &&
 					this.props.showMoreKey.indexOf(this.props.dataList.key) > -1 &&
 					<div className="row left-4x collapse collapse-padding">
-						<div className="columns small-12 bottom-2x top-1x">
+						<div className="columns small-12 top-1x">
 							<UIDropDownButton
 								className="naked vertical-middle"
 								buttonAction={this.toggleList}
@@ -39,11 +39,11 @@ class FilterList extends Component {
 								label={this.state.toggleList ?
 									<Fragment>
 										<span>{t('table:filter.showmore')}</span>
-										<span aria-hidden="true" className="vertical-middle icon-chevron-down"></span>
+										<span aria-hidden="true" className="icon-chevron-down"></span>
 									</Fragment>
 									: <Fragment>
 										<span>{t('table:filter.showless')}</span>
-										<span aria-hidden="true" className="vertical-middle icon-chevron-up"></span>
+										<span aria-hidden="true" className="icon-chevron-up"></span>
 									</Fragment>}
 							/>
 						</div>

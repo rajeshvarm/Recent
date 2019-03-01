@@ -16,7 +16,7 @@ import Filters from "components/filters/containers/Filters";
 import UIAlert from "UI/UIAlert";
 import UIDropDown from "UI/UIDropDown";
 import simpleDDState from "UI/modules/DDState";
-import SearchBar from "components/SearchBar";
+import UISearchBar from "UI/UISearchBar";
 import { ALERTS } from "UI/modules/Enumerations";
 
 import * as links from 'constants/routes';
@@ -38,6 +38,7 @@ class Claims extends Component {
     this.claimsFileTypeChoices = getClaimsFileTypeChoices(this.props.t);
     this.uuid = v4();
     this.uuid2 = v4();
+    this.searchBarRef = React.createRef();
   };
 
   ingressDataTransform = (props) => {
@@ -59,6 +60,8 @@ class Claims extends Component {
   }
 
   filterData = (request) => {
+    //once there is ka update on Search bar is done will modify this
+    // this.searchBarRef.inputRef.value = "";
     this.props.dispatch(Actions.fetchClaims(request));
   }
 
@@ -72,10 +75,16 @@ class Claims extends Component {
     this.props.dispatch(Actions.fetchClaims(request));
   }
 
-  searchList = ($event) => {
+  sortDataList = (sortType, sortOrder) => {
+    let request = Object.assign({}, this.props.data.get(Constants.PROP_FILTERS), {sortType, sortOrder});
+    this.props.dispatch(Actions.fetchClaims(request));
+  }
+
+
+  searchList = (value) => {
     let updatedList = this.props.data.get(Constants.PROP_FILTERED_DATA);
     updatedList = updatedList.filter(item => {
-      return (Object.keys(item).some(key => item[key].toString().toLowerCase().includes($event.target.value.toLowerCase())))
+      return (Object.keys(item).some(keys=> item[keys].toString().toLowerCase().includes(value.toLowerCase())))
     });
     this.setState({ searchResults: updatedList });
   }
@@ -277,7 +286,7 @@ class Claims extends Component {
       },
       {
         label: "Plan Type",
-        key: "planType",
+        key: "type",
       },
       {
         label: "Providers",
@@ -313,17 +322,10 @@ class Claims extends Component {
         columnClass: 'text-center'
       },
       {
-        label: t('claims:table.charge'),
-        name: "Claim Charge",
-        key: "claimCharge",
-        sort: true,
-        columnClass: 'text-right'
-      },
-      {
-        label: t('claims:table.cost'),
-        name: "Your Cost",
+        label: t('claims:table.memberResponsibility'),
+        name: "Member Responsibility",
         key: "yourCost",
-        sort: true,
+        sort: false,
         columnClass: 'text-right'
       }
     ]
@@ -333,10 +335,7 @@ class Claims extends Component {
     const isLoaded = this.props.data.get(Constants.PROP_ISLOADED);
     return (
       <Fragment>
-      {!this.props.data.get(GlobalConstants.PROP_ERROR) ?
-        (<Fragment> 
-          {this.props.data.get(Constants.PROP_TOTAL_COUNT) > 0 ? 
-      (<Fragment>
+        {/* <Loader isError={this.props.data.get(GlobalConstants.PROP_ERROR)} isFetching={this.props.data.get(GlobalConstants.PROP_FETCHING)}> */}
         <div class="row">
           <div class="small-12 medium-4 columns">
             <h1>{t("claims:claims")}</h1>
@@ -357,23 +356,24 @@ class Claims extends Component {
             </button>
           </div>
         </div>
-        {/*this.props.data.filteredData.some((list) => list.savedCost) &&
-          !this.props.data.hideNotify &&*/
-          /*<UIAlert
-            alertType={ALERTS.NOTIFICATION}
-            alertTagline={t('claims:alerttitle')}
-            icon="icon circledIconColored icon-money-fill-circle"
-            closeButton={notification}
-            class="event notification naked"
-          >
-            <span class="padding-left-1x">Next time save <strong>$850</strong> by choosing Urgent Care</span>
-            <a href="#" class="secondary float-right" aria-label="Learn more about savings">{t('claims:learnmore')}</a>
-          </UIAlert>*/
+        {
+          // this.props.data.get(Constants.PROP_FILTER_DATA).some((list) => list.savedCost) &&
+          // !this.props.data.hideNotify &&
+          // <UIAlert
+          //   alertType={ALERTS.NOTIFICATION}
+          //   alertTagline={t('claims:alerttitle')}
+          //   icon="icon circledIconColored icon-money-fill-circle"
+          //   closeButton={notification}
+          //   class="event notification naked"
+          // >
+          //   <span class="padding-left-1x">Next time save <strong>$850</strong> by choosing Urgent Care</span>
+          //   <a href="#" class="secondary float-right" aria-label="Learn more about savings">{t('claims:learnmore')}</a>
+          // </UIAlert>
             <UIDropDown
               ddId="savingsAlert"
               class="notification note hide-for-print bottom-1x"
               ddState={this.state.ddState}
-              closeButton={{buttonAction: true, class: "close naked", icon: "icon-close"}}
+              closeButton={{buttonAction: true, className: "close collapse", icon: "icon-close"}}
               buttonAction={this.toggleDropVisibility}
               children={
                 <div class="row">
@@ -411,18 +411,18 @@ class Claims extends Component {
             />
           </div>
           <div class="columns small-12 medium-6 large-6">
-            <SearchBar
-              placeholder="Search My Content"
+            <UISearchBar
+              placeholder="Search"
               ariaLabel="search claims"
               ariaControls={`${this.uuid} ${this.uuid2}`}
               onValidatedChange={this.searchList}
+              ref={(searchBarRef) => { this.searchBarRef = searchBarRef }}
             />
           </div>
           <div className="desktop-view columns small-12 medium -3 large-3 top-1x text-right" id={this.uuid} aria-live="polite">
             {`${t('table:table.displaying')} ${filteredDataLength}/${this.props.data.get(Constants.PROP_TOTAL_COUNT)} ${t('table:table.claims')}`}
           </div>
         </div>
-        <Loader isFetching={this.props.data.get(GlobalConstants.PROP_FETCHING)}>
           <UITable
             data={this.state.searchResults}
             headers={columns}
@@ -432,14 +432,16 @@ class Claims extends Component {
             providerRowDisplay='facilityprovider'
             uniqueKey="claimId"
             showDetails={true}
+            sortList={this.sortDataList}
             isLoaded={isLoaded}
             linkAriaLabelKey={ariaLabelKey}
             filterAriaControl="sidenav claims"
             id={this.uuid2}
+            sortOrder={this.props.data.get(Constants.PROP_FILTERS).sortOrder}
           />
-           {filters.range && this.props.data.get(Constants.PROP_TOTAL_COUNT) >= filters.range[1] && (
-              <div className="row top-1x text-center hide-for-print">
-                <div className="columns small-12 ">
+           {filters.range && this.props.data.get(Constants.PROP_TOTAL_COUNT)-1 >= filters.range[1] && (
+              <div class="row top-1x text-center hide-for-print">
+                <div class="columns small-12 ">
                   <button
                     type="button"
                     class="button secondary core2"
@@ -451,16 +453,12 @@ class Claims extends Component {
                 </div>
               </div>
              )}
-        </Loader>
+        {/* </Loader> */}
 
         {/* Export/Download Claims Modal Content  */}
         <div aria-live="polite">
           {this.getDownloadClaimsModalContent(t)}
         </div>
-      </Fragment>) : <label>No Claims Found</label>
-    }
-  </Fragment>) : (<label className='text-danger'>Error Fetching Data</label>)
-}
 </Fragment>
     );
   }

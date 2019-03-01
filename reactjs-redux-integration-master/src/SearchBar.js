@@ -1,12 +1,14 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 
-export class SearchBar extends Component {
+export class UISearchBar extends Component {
   static propTypes = {
     placeholder: PropTypes.string,
     ariaControls: PropTypes.string.isRequired,
     ariaLabel: PropTypes.string.isRequired,
-    onValidatedChange: PropTypes.func.isRequired
+    onValidatedChange: PropTypes.func.isRequired,
+    id: PropTypes.string,
+    value: PropTypes.string
   };
 
   //onChange, update upsteam filter
@@ -15,7 +17,7 @@ export class SearchBar extends Component {
   };
 
   render() {
-    const { ariaControls, placeholder, ariaLabel } = this.props;
+    const { ariaControls, placeholder, ariaLabel, onValidatedChange, ...props } = this.props;
     return (
       <div className="search-bar">
         <input
@@ -23,7 +25,8 @@ export class SearchBar extends Component {
           placeholder={placeholder}
           aria-placeholder={placeholder}
           onChange={this.change}
-          aria-controls={this.ariaControls}
+          aria-controls={ariaControls}
+          {...props}
         />
         <span className="icon icon-search-find" aria-hidden="true" />
       </div>
@@ -31,5 +34,4 @@ export class SearchBar extends Component {
   }
 }
 
-
-export default SearchBar;
+export default UISearchBar;
