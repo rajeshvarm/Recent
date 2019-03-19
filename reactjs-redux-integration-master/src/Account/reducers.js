@@ -1,6 +1,6 @@
 import {fromJS, Map} from 'immutable';
 
-import * as AccountDetailActions from 'actions/AccountDetail';
+import * as AccountDetailActions from 'actions/accountDetail';
 
 import * as GlobalConstants from 'constants/global';
 
@@ -14,10 +14,10 @@ const AccountDetailReducer = (state, action) => {
     });
   }
   switch (action.type) {
-    case AccountDetailActions.FETCH_ACCOUNT_DETAIL_REQUEST:
+    case AccountDetailActions.ACCOUNT_DETAIL_REQUEST_INIT:
       return state.set(GlobalConstants.PROP_FETCHING, true);
 
-    case AccountDetailActions.FETCH_ACCOUNT_DETAIL_SUCCESS:
+    case AccountDetailActions.ACCOUNT_DETAIL_REQUEST_SUCCESS:
       const {status, data} = action;
       return state.withMutations((m) => {
         m.set(GlobalConstants.PROP_INITIALIZED, true);
@@ -26,7 +26,7 @@ const AccountDetailReducer = (state, action) => {
         m.mergeDeep(data);
       });
 
-    case AccountDetailActions.FETCH_ACCOUNT_DETAIL_FAILURE:
+    case AccountDetailActions.ACCOUNT_DETAIL_REQUEST_FAILURE:
       return state.withMutations((m) => {
         m.set(GlobalConstants.PROP_FETCHING, false);
         m.set(GlobalConstants.PROP_ERROR, true);

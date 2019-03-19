@@ -14,10 +14,10 @@ import {numberWithoutDecimalFormat, phoneNumberFormat} from 'modules/Utility';
 import * as AccountConstants from 'constants/account';
 import * as GlobalConstants from 'constants/global';
 import * as AccountDetailActions from 'actions/accountDetail';
+import * as ProfileImageActions from 'actions/profileImage';
 
 import AddressModal from 'components/AddressModal';
 import AccordionContentRow from 'components/AccordionContentRow';
-
 import EmailModal from './accordion-content/Email-Modal';
 import PhoneModal from './accordion-content/Phone-Modal';
 import EthnicityModal from './accordion-content/Ethnicity-Modal';
@@ -27,6 +27,8 @@ import MobilityModal from './accordion-content/Mobility-Modal';
 import DisabilityModal from './accordion-content/Disability-Modal';
 import TransportationModal from './accordion-content/Transportation-Modal';
 import PasswordModal from './accordion-content/Change-Password-Modal';
+import EmergencyContactModal from './accordion-content/Emergency-Contact';
+import Loader from 'components/Loader';
 
 
 @translate(['common', 'account', 'addressdetails'])
@@ -47,12 +49,11 @@ class Account extends Component {
 
   componentDidMount() {
     this.props.dispatch(AccountDetailActions.fetchAccountDetails());
-    this.props.dispatch(AccountDetailActions.fetchProfileImg());
   }
 
   toggleDialogVisibility = (component, modalClass) => {
     this.setState((prevState) => {
-      console.log('modalass', modalClass)
+      console.log('modalClass', modalClass)
       return {
         modalVisibility: !prevState.modalVisibility,
         modalComponent: component ? component : '',
@@ -63,73 +64,105 @@ class Account extends Component {
 
   handleUpload = file => {
     console.log("Uploaded New file", file);
-    this.props.dispatch(AccountDetailActions.uploadProfileImg(file));
+    this.props.dispatch(ProfileImageActions.uploadProfileImg(file));
     return;
   };
+
   //Left-Section of Account
-  renderProfile = (t) => {
-    const list = this.props.accountReducer.get(AccountConstants.MEMBER_VIEW, fromJS([]));
-    const progress = this.props.accountReducer.get(AccountConstants.PROFILE_OPTIMIZATION, 0);
-    const profileImg = this.props.profileImgReducer.get(AccountConstants.PROP_PROFILE_IMG);
-    
-    return (
-      <div className="standard panel text-center">
-        <div className="border-image">
-          <img id="profileImage" src={`data:image/png;base64,${profileImg}`} alt="" />
-        </div>
-        <Dropzone 
-          className={`profile-image-uploader`}
-          onDrop={this.handleUpload}
-          maxfiles={1}
-          >
-          <button className="image-icon hide-for-small-only">
-            <span aria-hidden="true" class="icon icon-1x icon-pencil" />
-          </button>
-        </Dropzone>
-        <div class="top-4x">
-          <strong>{list.get(AccountConstants.FIRST_NAME, '')} {list.get(AccountConstants.LAST_NAME, '')}</strong>
-          <MediaQuery maxDeviceWidth={640}>
-            <div className="row button-margin">
-              <Dropzone 
-                className={`profile-image-uploader`}
-                onDrop={this.handleUpload}
-                maxfiles={1}
-                >
-                  <div className="columns small-12">
-                    <button className="primary core2 expand">{t('account:uploadPhoto')}</button>
-                  </div>
-              </Dropzone>
-              <div className="columns small-12">
-                <button className="secondary core2 expand">{t('account:removoPhoto')}</button>
-              </div>
-            </div>
-          </MediaQuery>
-          <div
-            class="progress-bar"
-            role="progressbar"
-            tabIndex="0"
-            aria-valuenow={progress}
-            aria-valuemin="0"
-            aria-valuetext={`${progress} percent`}
-            aria-valuemax="100">
-            <div class="progress" style={{width: `${progress}%`}} />
+  renderProfileImage = (t) => {
+    const { profileImgReducer } = this.props;
+    const profileImg = profileImgReducer && profileImgReducer.get(GlobalConstants.PROP_PROFILE_IMG);
+
+    let img = (
+    <div className="border-image">
+      <div id="profileImage" class="icon icon-4x icon-user core1" />
+    </div>)
+    let removeButton = null;
+
+    if(profileImg){
+      img = (
+        <Loader isFetching={profileImgReducer && profileImgReducer.get(GlobalConstants.PROP_FETCHING)} containerClass="border-image">
+          <div className="border-image">
+            <img id="profileImage" src={`data:image/png;base64,${profileImg}`} alt="" />
           </div>
-          <p>
-            <span>{numberWithoutDecimalFormat(progress)}</span> / 100
-          </p>
-          <hr className="collapse" />
-          <h2 className="hide-for-small-only hl-medium">{t('account:accountcomplete')}</h2>
-          <hr className="collapse hide-for-small-only" />
-          <p>
-            <a href="#">{t('account:addAnEmergencycontact')}</a>
-          </p>
-          <p>
-            <a href="#">{t('account:verifyemail')}</a>
-          </p>
+        </Loader>
+      )
+      removeButton = (
+        <div className="columns small-12">
+          <button className="secondary core2 mlp-button expand-75">{t('account:removoPhoto')}</button>
         </div>
-      </div>
+      )
+    }
+
+    return (
+      <section className="standard panel text-center" aria-label={t('account:photo')}>
+        <div className="row">
+          <div className="columns small-12 bottom-3x">
+            {img}
+          </div>
+          {removeButton}
+          <div className="columns small-12">
+            <Dropzone
+              className={`profile-image-uploader`}
+              onDrop={this.handleUpload}
+              maxfiles={1}
+            >
+              <button className="secondary core2 mlp-button expand-75">{t('account:addPhoto')}</button>
+            </Dropzone>
+          </div>
+        </div>
+      </section>
     );
   };
+
+  renderProfileDetails = (t) => {
+    const list = this.props.accountReducer.get(AccountConstants.MEMBER_VIEW, fromJS([]));
+    const progress = this.props.accountReducer.get(AccountConstants.PROFILE_OPTIMIZATION, 0);
+    return (
+      <section className="standard panel text-center" aria-label={t('account:completeAccount')}>
+        <div className="row">
+          <div className="columns small-12">
+            <strong>{list.get(AccountConstants.FIRST_NAME, '')} {list.get(AccountConstants.LAST_NAME, '')}</strong>
+          </div>
+          <div className="columns small-12">
+            <div
+              className="progress-bar"
+              role="progressbar"
+              aria-valuenow={progress}
+              aria-valuemin="0"
+              aria-valuetext={`${progress} percent`}
+              aria-valuemax="100">
+              <div class="progress" style={{ width: `${progress}%` }} />
+            </div>
+            <p>
+              {`${numberWithoutDecimalFormat(progress)} / 100`}
+            </p>
+          </div>
+          <div className="columns small-12 border-top">
+            <h2 className="hide-for-small-only hl-medium padding-top-1x padding-bottom-1x collapse">{t('account:accountcomplete')}</h2>
+          </div>
+          <div className="columns small-12 border-top">
+            <p>
+              <button className="linklike"
+                // onClick={this.toggleDialogVisibility()}
+                aria-haspopup="dialog"
+              >
+                <span>{t('account:addAnEmergencycontact')}</span>
+              </button>
+            </p>
+            <p class="collapse">
+              <button className="linklike"
+                // onClick={this.toggleDialogVisibility()}
+                aria-haspopup="dialog"
+              >
+                <span>{t('account:verifyemail')}</span>
+              </button>
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   //Rendering Inside Accordion Body
   renderAccordionContentRow = (list) => {
@@ -139,30 +172,29 @@ class Account extends Component {
         {(matches) => {
           if (matches) {
             return (
-              <Fragment>
-                <div className="row">
-                  <div className="columns small-12 medium-4 large-4 top-1x">
+              <div className="bottom-dashed padding-top-1x">
+                <div className="row left-2x padding-1x">
+                  <div className="columns small-12 medium-4 large-4">
                     <strong>{list.label}</strong>
                   </div>
-                  <div className="columns small-12 medium-7 large-6 top-1x">{list.value}</div>
-                  <div className="columns small-12 medium-1 large-2 text-right">
+                  <div className="columns small-12 medium-7 large-6">{list.value}</div>
+                  <div className="columns small-12 medium-1 large-2">
                     {list.isEdit && (
                       <button
-                        className="image-icon-text"
-                        onClick={() => this.toggleDialogVisibility(list.uiModalComponent)}
+                        className="circle-button primary core2"
+                        onClick={() => this.toggleDialogVisibility(list.uiModalComponent, list.uiModalClass)}
                         aria-haspopup="dialog">
-                        <span aria-hidden="true" class="icon icon-pencil"/>
+                        <span aria-hidden="true" class="icon icon-pencil icon-1x"/>
                       </button>
                     )}
                   </div>
                 </div>
-                <div className="dashed-divider"/>
-              </Fragment>
+              </div>
             );
           } else {
             return (
-              <Fragment>
-                <div className="row">
+              <div className="bottom-dashed padding-top-1x">
+                <div className="row left-2x padding-1x">
                   <div className="columns small-9">
                     <div className="row">
                       <div className="columns small-12">
@@ -171,19 +203,18 @@ class Account extends Component {
                       <div className="columns small-12">{list.value}</div>
                     </div>
                   </div>
-                  <div className="columns small-3 text-right">
+                  <div className="columns small-3">
                     {list.isEdit && (
                       <button
-                        className="image-icon-text"
+                        className="circle-button primary core2"
                         onClick={() => this.toggleDialogVisibility(list.uiModalComponent)}
                         aria-haspopup="dialog">
-                        <span aria-hidden="true" class="icon icon-pencil" />
+                        <span aria-hidden="true" class="icon icon-pencil icon-1x" />
                       </button>
                     )}
                   </div>
                 </div>
-                <div className="dashed-divider"/>
-              </Fragment>
+              </div>
             );
           }
         }}
@@ -198,9 +229,9 @@ class Account extends Component {
     let listData = {};
     return (
       <div>
-        {list.getIn([AccountConstants.MEMBER_VIEW, AccountConstants.ADDRESS]) && this.renderAddressTypes()}
-        {list.getIn([AccountConstants.MEMBER_VIEW, AccountConstants.PROP_EMAIL]) && this.renderEmailAddress()}
-        {list.getIn([AccountConstants.MEMBER_VIEW, AccountConstants.MOBILE_NUMBER]) && this.renderMobileNumber()}
+        <div className="dashed-bottom">{list.getIn([AccountConstants.MEMBER_VIEW, AccountConstants.ADDRESS]) && this.renderAddressTypes()}</div>
+        <div className="dashed-bottom">{list.getIn([AccountConstants.MEMBER_VIEW, AccountConstants.PROP_EMAIL]) && this.renderEmailAddress()}</div>
+        <div className="">{list.getIn([AccountConstants.MEMBER_VIEW, AccountConstants.MOBILE_NUMBER]) && this.renderMobileNumber()}</div>
       </div>
     );
   };
@@ -210,9 +241,8 @@ class Account extends Component {
   getFullAddress = (address) => {
     return(
       <Fragment>
-        <p className="collapse">{address.get('AddressLine1')}</p>
-        <p className="collapse">{address.get('addressline2')}</p>
-        <p className="collapse">{address.get('City')}, {address.get('State')}, {address.get('ZipCode')}</p>
+        <p className="collapse">{address.get('addressLine1')}<span className="left-1x collapse">{address.get('addressline2')}</span></p>
+        <p className="collapse">{address.get('city')}, {address.get('state')}, {address.get('zipCode')}</p>
       </Fragment>
     );
   }
@@ -220,7 +250,7 @@ class Account extends Component {
   renderAddressTypes = () => {
     const {t} = this.props;
     let list = this.props.accountReducer;
-    let addressLabel = [t('account:home'), t('account:alternateAddress'), t('account:billingAddress')];
+    let addressLabel = [t('account:homeAddress'), t('account:alternateAddress'), t('account:billingAddress')];
     let modalAddressTitle = [t('addressdetails:modalHomeTitle'), t('addressdetails:modalAlternateTitle'), t('addressdetails:modalBillingTitle')];
     let modalAddressSubTitle = [t('addressdetails:modalHomeSubTitle'), t('addressdetails:modalAlternateSubTitle'), t('addressdetails:modalBillingSubTitle')];
     let listData = [];
@@ -231,7 +261,7 @@ class Account extends Component {
         isEdit: true,
         data: list.getIn([AccountConstants.MEMBER_VIEW, AccountConstants.ADDRESS]),
         uiModalComponent: this.renderAddressModal(modalAddressTitle[i], modalAddressSubTitle[i]),
-        //uiModalClass: 'claims-download-modal',
+        uiModalClass: 'account-modal small',
         key: `renderAddressTypes`,
       });
     }
@@ -244,6 +274,15 @@ class Account extends Component {
     );
   };
 
+  renderAddressModal = (title, subTitle) => {
+    return <AddressModal
+      name="editAddress"
+      title={title}
+      subTitle={subTitle}
+      visible={this.state.modalVisibility}
+      onExit={this.toggleDialogVisibility} />;
+  }
+
   //Email
   renderEmailValue = () => {
     const {t} = this.props;
@@ -252,7 +291,7 @@ class Account extends Component {
         <span>{this.props.accountReducer.getIn([AccountConstants.MEMBER_VIEW, AccountConstants.PROP_EMAIL])}</span>
         <span className="left-2x">
           {this.props.accountReducer.getIn([AccountConstants.MEMBER_VIEW, AccountConstants.IS_EMAIL_VERIFIED]) ? (
-            <span className="green">{t('account:verified')}</span>
+            <span>{t('account:verified')}</span>
           ) : (
             <a>{t('account:unverified')}</a>
           )}
@@ -260,15 +299,6 @@ class Account extends Component {
       </Fragment>
     );
   };
-
-  renderAddressModal = (title, subTitle) => {
-    return <AddressModal 
-            name="editAddress"
-            title={title}
-            subTitle={subTitle}
-            visible={this.state.modalVisibility}
-            onExit={this.toggleDialogVisibility} />;
-  }
 
   renderEmailAddress = () => {
     const {t} = this.props;
@@ -280,6 +310,7 @@ class Account extends Component {
       data: email,
       uiModalComponent: this.renderEmailModal(),
       key: 'renderEmailAddress',
+      uiModalClass: 'account-modal small',
     };
     return this.renderAccordionContentRow(emailList);
   };
@@ -314,7 +345,7 @@ class Account extends Component {
         data: this.props.accountReducer.getIn([AccountConstants.MEMBER_VIEW, list.key]),
         uiModalComponent: this.renderEditPhoneNumberModal(this.props.accountReducer.getIn([AccountConstants.MEMBER_VIEW, list.key]), list),
         key: `renderEmailAddress-${index}`,
-       // uiModalClass: 'claims-download-modal',
+        uiModalClass: 'account-modal small',
       });
     });
     return mobileList.map((list) => this.renderAccordionContentRow(list));
@@ -329,7 +360,7 @@ class Account extends Component {
         </span>
         <span className="left-2x">
           {this.props.accountReducer.getIn([AccountConstants.MEMBER_VIEW, list.verifcationKey]) ? (
-            <span className="green">{t('account:verified')}</span>
+            <span>{t('account:verified')}</span>
           ) : (
             <a className="verification_link">{t('account:unverified')}</a>
           )}
@@ -358,15 +389,16 @@ class Account extends Component {
       for(let i = 0; i < list.size; i++) {
         if(ethnicityList.indexOf(list.getIn([i, AccountConstants.PROP_TYPE])) > -1) {
           list.get(i).mapKeys((key, value) => {
-            ethnicityValue = `${ethnicityValue}  ${list.getIn([i, AccountConstants.PREFER_NOT_TO_PROVIDE]) === AccountConstants.PROP_NO 
-              && value === AccountConstants.PROP_YES && key !== AccountConstants.PREFER_NOT_TO_PROVIDE > -1  ? 
+            ethnicityValue = `${ethnicityValue}  ${list.getIn([i, AccountConstants.PREFER_NOT_TO_PROVIDE]) === AccountConstants.PROP_NO
+              && value === AccountConstants.PROP_YES && key !== AccountConstants.PREFER_NOT_TO_PROVIDE > -1  ?
               `${key} ${ethnicityValue.includes('&') ? '' : '&'}` : ''}`
             contentList = {
-              label: t('account:ethnicityRace'), 
+              label: t('account:ethnicityRace'),
               value: ethnicityValue,
               isEdit: true,
               data: list,
               uiModalComponent: this.renderEthnicityModal(this.props.accountReducer.getIn([AccountConstants.MEMBER_VIEW, list.key]), list),
+              uiModalClass:'account-modal large',
               key: `renderEthnicityLanguagePreference-${key}`
             }
           });
@@ -380,11 +412,11 @@ class Account extends Component {
     return <EthnicityModal data={this.props.accountReducer} onExitModal={this.toggleDialogVisibility} />;
   };
 
-
+//Language
   renderLanguagePreference = () => {
     const {t} = this.props;
     let languageList = [
-        {key: AccountConstants.SPOKEN_LANGUAGE_PREFERENCE, label: t('account:spokenLanguage') }, 
+        {key: AccountConstants.SPOKEN_LANGUAGE_PREFERENCE, label: t('account:spokenLanguage') },
         {key: AccountConstants.WRITTEN_LANGUAGE_PREFERENCE, label: t('account:writtenLanguage')}
       ];
     let languageKey = [AccountConstants.SPOKEN_LANGUAGE_PREFERENCE, AccountConstants.WRITTEN_LANGUAGE_PREFERENCE]
@@ -398,11 +430,12 @@ class Account extends Component {
           if(languageKey.indexOf(list.getIn([i, AccountConstants.PROP_TYPE])) > -1) {
               if(listCheck.indexOf(ethnicity.label) === -1) {
                 contentList.push({
-                  label: ethnicity.label, 
+                  label: ethnicity.label,
                   value: list.getIn([i, 'selected']),
                   isEdit: true,
                   data: list,
                   uiModalComponent: this.renderLanguagePreferenceModal(this.props.accountReducer.getIn([AccountConstants.MEMBER_VIEW, list.key]), list),
+                  uiModalClass:'account-modal large',
                   key: `renderLanguagePreference-${ethnicity.key}`
                 })
               }
@@ -424,10 +457,10 @@ class Account extends Component {
     let list = this.props.accountReducer;
     return (
     <div>
-      {this.renderAccessibility()}
-      {this.renderMobility()}
-      {this.renderDisability()}
-      {this.renderTransportation()}
+      <div className="dashed-bottom">{this.renderAccessibility()}</div>
+      <div className="dashed-bottom">{this.renderMobility()}</div>
+      <div className="dashed-bottom">{this.renderDisability()}</div>
+      <div className="">{this.renderTransportation()}</div>
     </div>
     );
   };
@@ -437,10 +470,11 @@ class Account extends Component {
     const {t} = this.props;
     let accessibility = {
       label: t('account:accessibility'),
-      value: t('account:largeFont'),
+      // value: t('account:largeFont'),
       isEdit: true,
       // data: email,
       uiModalComponent: this.renderAccessibilityModal(),
+      uiModalClass: 'account-modal small',
       // key: 'renderEmailAddress',
     };
     return this.renderAccordionContentRow(accessibility);
@@ -455,10 +489,11 @@ class Account extends Component {
     const {t} = this.props;
     let mobility = {
       label: t('account:mobility'),
-      value: t('account:cane'),
+      // value: t('account:cane'),
       isEdit: true,
       // data: email,
       uiModalComponent: this.renderMobilityModal(),
+      uiModalClass: 'account-modal large',
       // key: 'renderEmailAddress',
     };
     return this.renderAccordionContentRow(mobility);
@@ -474,10 +509,11 @@ class Account extends Component {
     const {t} = this.props;
     let disabilityList = {
       label: t('account:disability'),
-      value: t('account:difficultyHearing'),
+      // value: t('account:difficultyHearing'),
       isEdit: true,
       // data: email,
       uiModalComponent: this.renderDisabilityModal(),
+      uiModalClass: 'account-modal large',
       // key: 'renderEmailAddress',
     };
     return this.renderAccordionContentRow(disabilityList);
@@ -493,10 +529,11 @@ class Account extends Component {
     const {t} = this.props;
     let transportationList = {
       label: t('account:transportation'),
-      value: t('account:selfDriven'),
+      // value: t('account:selfDriven'),
       isEdit: true,
       // data: email,
       uiModalComponent: this.renderTransportationModal(),
+      uiModalClass: 'account-modal large',
       // key: 'renderEmailAddress',
     };
     return this.renderAccordionContentRow(transportationList);
@@ -522,6 +559,7 @@ class Account extends Component {
       data: changePassword,
       uiModalComponent: this.renderChangePasswordModal(),
       key: 'renderAccountManagement',
+      uiModalClass: 'account-modal large'
     };
     return this.renderAccordionContentRow(accountManagement);
   };
@@ -556,12 +594,12 @@ class Account extends Component {
     const {t} = this.props
     return (
       <div className="row">
-        <div className="columns small-5">
-          Image
+        <div className="columns small-5 contact-avatar" title="Profile" aria-label={t('account:profile')}>
+          <img src="images/circular-image-treatment.jpg" alt=""/>
         </div>
         <div className="columns small-7">
-          <p className="collapse">{contact.get('FirstName')} {contact.get('LastName')}</p>
-          <p className="collapse">{contact.get('Relationship')}</p>
+          <p className="collapse">{contact.get('firstName')} {contact.get('lastName')}</p>
+          <p className="collapse">{contact.get('relationship')}</p>
           <a>{t('account:remove')}</a>
         </div>
       </div>
@@ -570,7 +608,7 @@ class Account extends Component {
 
 // If needed to display  more than phone number in the value section can add it here
   getContactPhoneNumber = (contact) =>{
-    return(<span>{phoneNumberFormat(contact.get('PhoneNum'))}</span>)
+    return(<span>{phoneNumberFormat(contact.get('phoneNum'))}</span>)
   }
 
   renderContact = (contact) => {
@@ -586,21 +624,23 @@ class Account extends Component {
         isEdit: true,
         data: list.getIn([AccountConstants.MEMBER_VIEW, AccountConstants.EMERGENCY_CONTACT]),
         key: `renderContact`,
+        uiModalComponent: this.renderContactModal(),
+        uiModalClass: 'account-modal large'
       });
     }
     return contactData.map((contactData) => this.renderAccordionContentRow(contactData));
     }
   }
 
-  // renderContactModal = () => {
-  //   return <ContactModal data={this.props.accountReducer} onExitModal={this.toggleDialogVisibility} />;
-  // };
+  renderContactModal = () => {
+    return <EmergencyContactModal data={this.props.accountReducer} onExitModal={this.toggleDialogVisibility} />;
+  };
 
   //For Displaying Add Contact row
   renderAddContact = () => {
     const {t} = this.props;
     let addContact = {
-      label: "Image",
+      label: <div className="columns small-5 icon icon-user icon-2x"></div>,
       value: t('account:addEmergencyContact'),
       isEdit: true,
      // uiModalComponent: ,
@@ -613,7 +653,6 @@ class Account extends Component {
   // };
 
 
-  
 // Legal Settings
 renderLegalSettings = () => {
   const {t} = this.props
@@ -648,7 +687,7 @@ renderLegalSettings = () => {
 
   renderLegalForms = () =>{
     const {t} = this.props
-    
+
     let legalForms = {
       label: t('account:legalForms'),
       isEdit: true,
@@ -663,68 +702,69 @@ renderLegalSettings = () => {
       {
         ariaLabel: t('account:accordionHeaders.addressEmailAndPhone'),
         header: t('account:accordionHeaders.addressEmailAndPhone'),
-        body: this.renderAddressEmailAndPhone(t),
+        body: <div className="flush">{this.renderAddressEmailAndPhone(t)}</div>,
       },
       {
         ariaLabel: t('account:accordionHeaders.ethnicityLanguagePreference'),
         header: t('account:accordionHeaders.ethnicityLanguagePreference'),
-        body: this.renderEthnicityLanguagePreference(t),
+        body: <div className="flush">{this.renderEthnicityLanguagePreference(t)}</div>,
       },
       {
         ariaLabel: t('account:accordionHeaders.accessibilityMobilityTransportation'),
         header: t('account:accordionHeaders.accessibilityMobilityTransportation'),
-        body: this.renderAccessibilityMobilityTransportation(t),
+        body: <div className="flush">{this.renderAccessibilityMobilityTransportation(t)}</div>,
       },
       {
         ariaLabel: t('account:accordionHeaders.accountManagement'),
         header: t('account:accordionHeaders.accountManagement'),
-        body: this.renderAccountManagement(t),
+        body: <div className="flush">{this.renderAccountManagement(t)}</div>,
       },
       {
         ariaLabel: t('account:accordionHeaders.paymentMethods'),
         header: t('account:accordionHeaders.paymentMethods'),
-        body: this.renderPaymentMethods(t),
+        body: <div className="flush">{this.renderPaymentMethods(t)}</div>,
       },
       {
         ariaLabel: t('account:accordionHeaders.emergencyContact'),
         header: t('account:accordionHeaders.emergencyContact'),
-        body: this.renderEmergencyContact(t),
+        body: <div className="flush">{this.renderEmergencyContact(t)}</div>,
       },
       {
         ariaLabel: t('account:accordionHeaders.legalSettings'),
         header: t('account:accordionHeaders.legalSettings'),
-        body: this.renderLegalSettings(t),
+        body: <div className="flush">{this.renderLegalSettings(t)}</div>,
       },
     ];
     return (
       <div>
-        <UIAccordion className="accordion naked" openFirstPanelOnDefault>{accordionContent}</UIAccordion>
         <UIModal visible={this.state.modalVisibility} onExit={this.toggleDialogVisibility} dialogClasses={this.state.modalClass}>
           {this.state.modalComponent}
         </UIModal>
+        <Loader isFetching={this.props.accountReducer.get(GlobalConstants.PROP_FETCHING)}>
+          <UIAccordion className="accordion naked" openFirstPanelOnDefault>{accordionContent}</UIAccordion>
+        </Loader>
       </div>
     );
   };
 
   renderIdCardPanel = (t) =>{
     return(
-      <div className="standard panel text-center">
-        <div className="row head">
+      <section className="standard panel text-center" aria-label={t('account:viewCard')}>
+        <div className="row head border-bottom">
           <div className="columns small-12">
             <h2 className="hl-medium">{t('account:viewYourIdCard')}</h2>
           </div>
         </div>
-        <hr className="collapse"/>
         <div className="row body top-1x">
           <div className="columns small-12">
             <p className="collapse text-left padding-left-4x">{t('account:needYourIdToday')}</p>
             <p className="collapse text-left padding-left-4x">{t('account:printIdForProof')}</p>
-            <Link to={links.IDCARD} className="button primary core2 top-1x">
+            <Link to={links.IDCARD} className="button primary core2 top-1x collapse">
               <span>{t('account:viewIdCard')}</span>
             </Link>
           </div>
         </div>
-      </div>
+      </section>
     )
   }
 
@@ -735,15 +775,18 @@ renderLegalSettings = () => {
       <Fragment>
         <div className="row">
           <div className="columns small-12">
-            <h1>{t('account:title')}</h1>
+            <h1 className="hl-xxlarge">{t('account:title')}</h1>
           </div>
         </div>
         <div className="rows top-4x">
           <div className="columns small-12 medium-4 large-4">
-            {this.renderProfile(t)}
+            {this.renderProfileImage(t)}
+            {this.renderProfileDetails(t)}
             {this.renderIdCardPanel(t)}
           </div>
-          <div className="columns small-12 medium-8 large-8 bottom-1x">{this.renderProfileSettings(t)}</div>
+          <section className="columns small-12 medium-8 large-8 bottom-1x shadow my-account-wrapper" aria-label={t('account:profile')}>
+            {this.renderProfileSettings(t)}
+          </section>
         </div>
       </Fragment>
     );
